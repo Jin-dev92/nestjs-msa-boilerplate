@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
 @Injectable()
-export class KakaoStrategy extends PassportStrategy(Strategy) {
+export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(configService: ConfigService) {
     super(
       {

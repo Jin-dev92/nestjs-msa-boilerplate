@@ -3,4 +3,4 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 
 @Injectable()
-export class GoogleOauthStrategy extends PassportStrategy(Strategy) {}
+export class GoogleOauthStrategy extends PassportStrategy(Strategy, 'google') {}
