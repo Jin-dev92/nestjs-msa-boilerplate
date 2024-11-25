@@ -1,3 +1,6 @@
 import { Strategy } from 'passport-google-oauth20';
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 
-export class GoogleOauthStrategy extends Strategy {}
+@Injectable()
+export class GoogleOauthStrategy extends PassportStrategy(Strategy) {}
