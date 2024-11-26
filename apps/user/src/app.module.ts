@@ -18,17 +18,14 @@ import { User } from '@libs/database';
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        console.log('@@@DATABASE_URL', configService.get('DATABASE_URL'));
-        return {
-          type: 'postgres',
-          url: configService.getOrThrow('DATABASE_URL'),
-          // entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          entities: [User],
-          autoLoadEntities: true,
-          synchronize: true,
-        };
-      },
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        url: configService.getOrThrow('DATABASE_URL'),
+        // entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [User],
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
     }),
     AuthModule,
     UserModule,

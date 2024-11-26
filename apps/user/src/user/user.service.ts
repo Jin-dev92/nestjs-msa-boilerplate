@@ -23,14 +23,6 @@ export class UserService {
     }
   }
 
-  private async checkExistByEmail(email: string) {
-    const user = await this.userRepository.findOneBy({
-      email,
-    });
-    if (user) {
-      throw new BadRequestException('이미 존재하는 이메일입니다.');
-    }
-  }
   async checkUserByEmail(email: string) {
     const user = await this.userRepository.findOneBy({
       email,
@@ -39,5 +31,15 @@ export class UserService {
       throw new NotFoundException('존재하지 않는 유저입니다.');
     }
     return user;
+  }
+
+  /*  private function */
+  private async checkExistByEmail(email: string) {
+    const user = await this.userRepository.findOneBy({
+      email,
+    });
+    if (user) {
+      throw new BadRequestException('이미 존재하는 이메일입니다.');
+    }
   }
 }

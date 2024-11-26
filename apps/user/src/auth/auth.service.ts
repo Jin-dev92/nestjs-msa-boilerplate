@@ -1,6 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { EncryptionService } from '@libs/encryption';
+import { User } from '@libs/database';
 
 @Injectable()
 export class AuthService {
@@ -9,7 +14,14 @@ export class AuthService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async authenticateToLocal(email: string, password: string) {
+  async loginExecutes(user: User) {
+    return {
+      accessToken: await this.encryptionService.issueToken(user, 'access'),
+      refreshToken: await this.encryptionService.issueToken(user, 'refresh'),
+    };
+  }
+
+  async authenticateToLocalExecutes(email: string, password: string) {
     const user = await this.userService.checkUserByEmail(email);
     if (
       user.password !== (await this.encryptionService.hashPassword(password))
@@ -18,6 +30,26 @@ export class AuthService {
     }
     return user;
   }
-  // async authenticateToJwt(email: string, password: string) {}
+
   // async authenticateToKakao(email: string, password: string) {}
+
+  async reissueTokensExecutes(authorization: string) {
+    // 토큰 검증 로직
+    const { email, type, role, sub } =
+      await this.encryptionService.parseBearerToken(authorization);
+    if (type !== 'refresh') {
+      throw new BadRequestException('Refresh token이 아닙니다.');
+    }
+    // 토큰 재발급
+    return {
+      accessToken: await this.encryptionService.issueToken(
+        { email, role, id: sub },
+        'access',
+      ),
+      refreshToken: await this.encryptionService.issueToken(
+        { email, role, id: sub },
+        'refresh',
+      ),
+    };
+  }
 }
