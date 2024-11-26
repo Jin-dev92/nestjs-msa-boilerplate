@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import Joi from '@libs/common';
+import Joi, { ENVIRONMENT_KEYS } from '@libs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 
@@ -20,7 +20,7 @@ import { User } from '@libs/database';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        url: configService.getOrThrow('DATABASE_URL'),
+        url: configService.getOrThrow(ENVIRONMENT_KEYS.DATABASE_URL),
         // entities: [__dirname + '/**/*.entity{.ts,.js}'],
         entities: [User],
         autoLoadEntities: true,
