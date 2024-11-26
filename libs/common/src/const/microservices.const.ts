@@ -1,0 +1,3 @@
+export const MICROSERVICE_NAME = {
+  USER_SERVICE: 'USER_SERVICE',
+};

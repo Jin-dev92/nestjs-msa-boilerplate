@@ -3,14 +3,13 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
 import { EncryptionService } from '@libs/encryption';
 import { User } from '@libs/database';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    // private readonly userService: UserService,
     private readonly encryptionService: EncryptionService,
   ) {}
 
