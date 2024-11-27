@@ -1,6 +1,7 @@
-import { Controller, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { KakaoGuard, LocalGuard } from './guard';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,8 +10,9 @@ export class AuthController {
   // local 보안 로직은 직접 구현
   @UseGuards(LocalGuard)
   @Post('login')
-  async login(@Req() req) {
-    return await this.authService.loginExecutes(req.user);
+  async login(@Body() dto: LoginDto) {
+    return dto;
+    // return await this.authService.loginExecutes(req.user);
   }
 
   @UseGuards(KakaoGuard)

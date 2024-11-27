@@ -23,7 +23,6 @@ export class AuthService {
   }
 
   async authenticateToLocalExecutes(email: string, password: string) {
-    // const user = this.client.emit('checkUserByEmail', email);
     const user = await this.userService.checkUserByEmail(email);
     if (
       user.password !== (await this.encryptionService.hashPassword(password))
