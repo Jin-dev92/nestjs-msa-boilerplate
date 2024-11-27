@@ -1,24 +1,15 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/nestjs-msa-boilerplate/src",
+  "sourceRoot": "apps/api-gateway/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/nestjs-msa-boilerplate/tsconfig.app.json"
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/nestjs-msa-boilerplate",
+  "root": "apps/api-gateway",
   "projects": {
-    "nestjs-msa-boilerplate": {
-      "type": "application",
-      "root": "apps/nestjs-msa-boilerplate",
-      "entryFile": "main",
-      "sourceRoot": "apps/nestjs-msa-boilerplate/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/nestjs-msa-boilerplate/tsconfig.app.json"
-      }
-    },
     "user": {
       "type": "application",
       "root": "apps/user",
