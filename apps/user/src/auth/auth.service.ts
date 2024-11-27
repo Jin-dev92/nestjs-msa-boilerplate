@@ -5,13 +5,12 @@ import {
 } from '@nestjs/common';
 import { EncryptionService } from '@libs/encryption';
 import { User } from '@libs/database';
-import { ClientProxy } from '@nestjs/microservices';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly client: ClientProxy,
+    // private readonly client: ClientProxy,
     private readonly userService: UserService,
     private readonly encryptionService: EncryptionService,
   ) {}

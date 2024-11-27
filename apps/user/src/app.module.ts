@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi, { ENVIRONMENT_KEYS } from '@libs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@libs/database';
-import { AuthModule } from './auth/src/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
