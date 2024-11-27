@@ -4,8 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { EncryptionService } from '@libs/encryption';
-import { User } from '@libs/database';
 import { UserService } from '../user/user.service';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +15,11 @@ export class AuthService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async loginExecutes(user: User) {
+  async loginExecutes(dto: LoginDto) {
+    const { email, password } = dto;
+    // 유저 조회
+    const user = await this.userService.checkUserByEmail(email);
+    // 로그인 히스토리 남기기
     return {
       accessToken: await this.encryptionService.issueToken(user, 'access'),
       refreshToken: await this.encryptionService.issueToken(user, 'refresh'),
