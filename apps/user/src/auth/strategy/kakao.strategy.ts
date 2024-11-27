@@ -17,9 +17,5 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       ),
     });
   }
-  validate(accessToken: string, refreshToken: string, profile: Profile) {
-    console.log('@@accessToken', accessToken);
-    console.log('refreshToken', refreshToken);
-    console.log('profile', profile);
-  }
+  validate(accessToken: string, refreshToken: string, profile: Profile) {}
 }

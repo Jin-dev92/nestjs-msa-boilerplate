@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@libs/database';
 import { IJwtPayload } from '@libs/encryption/interfaces';
-import { UserService } from '../../../apps/user/src/user/user.service';
 import { ENVIRONMENT_KEYS } from '@libs/common';
 
 @Injectable()
@@ -12,16 +11,26 @@ export class EncryptionService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
+    // private readonly userService: UserService,
   ) {}
 
-  async hashPassword(password: string, salt = undefined) {
-    return await bcrypt.hash(
-      password,
-      salt || this.configService.getOrThrow(ENVIRONMENT_KEYS.AUTH_ROUNDS),
-    );
+  hashPassword(password: string, salt = undefined) {
+    try {
+      return bcrypt.hash(
+        password,
+        parseInt(this.configService.getOrThrow(ENVIRONMENT_KEYS.AUTH_ROUNDS)),
+      );
+    } catch (e) {
+      throw e;
+    }
   }
-
+  comparePassword(password: string, hashedPassword: string) {
+    try {
+      return bcrypt.compare(password, hashedPassword);
+    } catch (e) {
+      throw e;
+    }
+  }
   async issueToken(
     user: Pick<User, 'id' | 'role' | 'email'>,
     type: 'access' | 'refresh' = 'access',

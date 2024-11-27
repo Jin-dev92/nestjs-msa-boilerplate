@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { CommonEntity } from '@libs/database/entities';
 import { UserRoleEnum } from '@libs/database/enum';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends CommonEntity {
@@ -10,10 +11,11 @@ export class User extends CommonEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column({ select: false })
+  @Exclude()
+  @Column()
   password: string;
 
-  @Column({ length: 100 })
+  @Column()
   username: string;
 
   @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER })

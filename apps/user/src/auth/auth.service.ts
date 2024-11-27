@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async loginExecutes(dto: LoginDto) {
-    const { email, password } = dto;
+    const { email } = dto;
     // 유저 조회
     const user = await this.userService.checkUserByEmail(email);
     // 로그인 히스토리 남기기
@@ -29,7 +29,7 @@ export class AuthService {
   async authenticateToLocalExecutes(email: string, password: string) {
     const user = await this.userService.checkUserByEmail(email);
     if (
-      user.password !== (await this.encryptionService.hashPassword(password))
+      !(await this.encryptionService.comparePassword(password, user.password))
     ) {
       throw new UnauthorizedException('비밀번호가 올바르지 않습니다.');
     }

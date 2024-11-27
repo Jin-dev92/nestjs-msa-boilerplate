@@ -7,16 +7,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { EncryptionService } from '@libs/encryption';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly encryptionService: EncryptionService,
   ) {}
-  async createUser(dto: CreateUserDto) {
+  async signUp(dto: CreateUserDto) {
     try {
       await this.checkExistByEmail(dto.email); // 중복 확인
-      const user = this.userRepository.create(dto);
+      const user = this.userRepository.create({
+        ...dto,
+        password: await this.encryptionService.hashPassword(dto.password),
+      });
       await this.userRepository.save(user);
     } catch (e) {
       throw new BadRequestException(e);

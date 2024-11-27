@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('nestjs-microservices-boilerplate')
     .setDescription('User Service API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, swaggerDocument);
