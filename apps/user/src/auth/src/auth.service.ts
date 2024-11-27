@@ -5,11 +5,14 @@ import {
 } from '@nestjs/common';
 import { EncryptionService } from '@libs/encryption';
 import { User } from '@libs/database';
+import { ClientProxy } from '@nestjs/microservices';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    // private readonly userService: UserService,
+    private readonly client: ClientProxy,
+    private readonly userService: UserService,
     private readonly encryptionService: EncryptionService,
   ) {}
 
@@ -21,6 +24,7 @@ export class AuthService {
   }
 
   async authenticateToLocalExecutes(email: string, password: string) {
+    // const user = this.client.emit('checkUserByEmail', email);
     const user = await this.userService.checkUserByEmail(email);
     if (
       user.password !== (await this.encryptionService.hashPassword(password))

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi, { ENVIRONMENT_KEYS } from '@libs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@libs/database';
+import { AuthModule } from './auth/src/auth.module';
 
 @Module({
   imports: [
@@ -27,8 +27,8 @@ import { User } from '@libs/database';
         synchronize: true,
       }),
     }),
-    AuthModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
