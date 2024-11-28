@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { EncryptionService } from './encryption.service';
 import { ConfigModule } from '@nestjs/config';
-import Joi from '@libs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { Joi } from '@libs/common';
 
 @Module({
   imports: [

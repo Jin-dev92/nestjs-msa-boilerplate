@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import Joi from 'joi';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
+import { Joi } from '@libs/common';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        // NODE_ENV: Joi.string().valid('development', 'production').required(),
+        TCP_PORT: Joi.number().required(),
+        HOST: Joi.string().required(),
       }),
     }),
   ],

@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@libs/database';
 import { IJwtPayload } from '@libs/encryption/interfaces';
-import { ENVIRONMENT_KEYS } from '@libs/common';
+import { dayjs, ENVIRONMENT_KEYS } from '@libs/common';
 
 @Injectable()
 export class EncryptionService {
@@ -24,6 +24,7 @@ export class EncryptionService {
       throw e;
     }
   }
+
   comparePassword(password: string, hashedPassword: string) {
     try {
       return bcrypt.compare(password, hashedPassword);
@@ -31,6 +32,7 @@ export class EncryptionService {
       throw e;
     }
   }
+
   async issueToken(
     user: Pick<User, 'id' | 'role' | 'email'>,
     type: 'access' | 'refresh' = 'access',
@@ -46,12 +48,17 @@ export class EncryptionService {
       email,
       role,
       type,
+      exp:
+        type === 'access'
+          ? dayjs().add(1, 'hour').unix()
+          : dayjs().add(14, 'day').unix(),
     };
     return await this.jwtService.signAsync(payload, {
       secret,
       expiresIn,
     });
   }
+
   verifyToken(token: string, type: 'access' | 'refresh' = 'access') {
     const secret =
       type === 'access'

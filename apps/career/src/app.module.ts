@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import Joi from 'joi';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      validationSchema: Joi.object({}),
+      validationSchema: Joi.object({
+        TCP_PORT: Joi.number().required(),
+        HOST: Joi.string().required(),
+      }),
     }),
     // TypeOrmModule.forRootAsync({
     //   inject: [ConfigService],
@@ -17,6 +21,21 @@ import Joi from 'joi';
     //     synchronize: true,
     //   }),
     // }),
+    ClientsModule.registerAsync({
+      clients: [
+        {
+          inject: [ConfigService],
+          name: MICROSERVICE_NAME.USER_SERVICE,
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow(ENVIRONMENT_KEYS.HOST),
+              port: configService.getOrThrow(ENVIRONMENT_KEYS.TCP_PORT),
+            },
+          }),
+        },
+      ],
+    }),
   ],
   controllers: [],
   providers: [],

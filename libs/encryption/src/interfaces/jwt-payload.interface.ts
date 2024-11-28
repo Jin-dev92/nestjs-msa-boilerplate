@@ -5,4 +5,5 @@ export interface IJwtPayload {
   email: string;
   role: UserRoleEnum;
   type: 'access' | 'refresh';
+  exp: number;
 }

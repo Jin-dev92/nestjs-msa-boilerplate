@@ -1,4 +1,6 @@
-import * as Joi from 'joi';
+import * as joi from 'joi';
+import * as Dayjs from 'dayjs';
 
-export default Joi;
+export const Joi = joi;
+export const dayjs = Dayjs;
 export * from './const';
