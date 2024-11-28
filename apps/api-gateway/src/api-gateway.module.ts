@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ApiGatewayController } from './api-gateway.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MICROSERVICE_NAME } from '@libs/common';
@@ -19,4 +19,8 @@ import { MICROSERVICE_NAME } from '@libs/common';
   controllers: [ApiGatewayController],
   providers: [],
 })
-export class ApiGatewayModule {}
+export class ApiGatewayModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply().forRoutes('*');
+  }
+}
