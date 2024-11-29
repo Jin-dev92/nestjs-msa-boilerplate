@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import process from 'node:process';
 import { ENVIRONMENT_KEYS } from '@libs/common';
 
 async function bootstrap() {

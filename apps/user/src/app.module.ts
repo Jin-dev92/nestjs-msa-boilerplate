@@ -16,6 +16,9 @@ import { AuthModule } from './auth/auth.module';
         NODE_ENV: Joi.valid('development', 'production').required(),
         DATABASE_URL: Joi.string().required(),
         HOST: Joi.string().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({

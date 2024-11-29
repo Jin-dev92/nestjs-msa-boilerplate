@@ -11,12 +11,11 @@ import { Socket } from 'socket.io';
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('receiverMessage')
-  async receiverMessage(
+  @SubscribeMessage('receiveMessage')
+  async receiveMessage(
     @MessageBody() data: { message: string },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log(data);
-    console.log(client);
+    client.emit('sendMessage', data.message);
   }
 }
