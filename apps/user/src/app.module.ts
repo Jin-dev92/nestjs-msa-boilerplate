@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: './apps/user/.env',
       validationSchema: Joi.object({
         TCP_PORT: Joi.number().required(),
         NODE_ENV: Joi.valid('development', 'production').required(),

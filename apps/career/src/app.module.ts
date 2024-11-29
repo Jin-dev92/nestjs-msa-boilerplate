@@ -7,6 +7,7 @@ import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: './apps/career/.env',
       validationSchema: Joi.object({
         TCP_PORT: Joi.number().required(),
         HOST: Joi.string().required(),
