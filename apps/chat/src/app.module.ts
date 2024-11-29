@@ -7,9 +7,10 @@ import { ChatModule } from './chat/chat.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: './apps/chat/.env',
       validationSchema: Joi.object({
         TCP_PORT: Joi.number().required(),
-        HOST: Joi.string().required(),
+        // HOST: Joi.string().required(),
       }),
     }),
     ChatModule,
