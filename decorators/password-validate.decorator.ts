@@ -1,9 +1,9 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
-import { PasswordValidator } from './validator/password.validator';
+import { PasswordValidator } from './validators';
 
 // Custom Decorator
 function IsPasswordValid(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+  return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName,
