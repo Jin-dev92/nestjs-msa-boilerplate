@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ChatController } from './chat.controller';
-import { ChatService } from './chat.service';
 import { Joi } from '@libs/common';
 
 @Module({
@@ -14,7 +12,7 @@ import { Joi } from '@libs/common';
       }),
     }),
   ],
-  controllers: [ChatController],
-  providers: [ChatService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

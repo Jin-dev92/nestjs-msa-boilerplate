@@ -13,6 +13,18 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+  chat:
+    build:
+      context: .
+      dockerfile: ./apps/chat/Dockerfile
+    command: yarn run start:dev chat
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./apps/chat/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
   user:
     build:
       context: .

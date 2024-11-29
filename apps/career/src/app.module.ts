@@ -12,15 +12,6 @@ import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
         HOST: Joi.string().required(),
       }),
     }),
-    // TypeOrmModule.forRootAsync({
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) => ({
-    //     type: 'postgres',
-    //     url: configService.getOrThrow<string>('DATABASE_URL'),
-    //     autoLoadEntities: true,
-    //     synchronize: true,
-    //   }),
-    // }),
     ClientsModule.registerAsync({
       clients: [
         {
