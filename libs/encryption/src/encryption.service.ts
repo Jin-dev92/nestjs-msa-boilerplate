@@ -69,11 +69,14 @@ export class EncryptionService {
     });
   }
 
-  async parseBearerToken(bearerToken: string) {
+  async parseBearerToken(
+    bearerToken: string,
+    type: 'access' | 'refresh' = 'access',
+  ) {
     const [bearer, token] = bearerToken.split(' ');
     if (bearer.toLowerCase() !== 'bearer') {
       throw new BadRequestException('Bearer token 방식이 아닙니다.');
     }
-    return await this.verifyToken(token);
+    return await this.verifyToken(token, type);
   }
 }

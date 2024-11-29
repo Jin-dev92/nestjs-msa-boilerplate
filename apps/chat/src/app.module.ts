@@ -1,20 +1,20 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ENVIRONMENT_KEYS, Joi } from '@libs/common';
+import { ConfigModule } from '@nestjs/config';
+import { Joi, MICROSERVICE_NAME } from '@libs/common';
 import { ChatModule } from './chat/chat.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.getOrThrow(ENVIRONMENT_KEYS.DATABASE_URL),
-        synchronize: true,
-        autoLoadEntities: true,
-      }),
-    }),
+    // TypeOrmModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     type: 'postgres',
+    //     url: configService.getOrThrow(ENVIRONMENT_KEYS.DATABASE_URL),
+    //     synchronize: true,
+    //     autoLoadEntities: true,
+    //   }),
+    // }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/chat/.env',
@@ -28,6 +28,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
     }),
     ChatModule,
+    ClientsModule.register([
+      {
+        name: MICROSERVICE_NAME.USER_SERVICE,
+        transport: Transport.TCP,
+      },
+    ]),
   ],
   controllers: [],
   providers: [],
