@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Joi } from '@libs/common';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { Joi } from '@libs/common';
         HOST: Joi.string().required(),
       }),
     }),
+    ChatModule,
   ],
   controllers: [],
   providers: [],
