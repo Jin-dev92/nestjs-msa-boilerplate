@@ -1,7 +1,18 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ApiGatewayController } from './api-gateway.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MICROSERVICE_NAME } from '@libs/common';
+import {
+  BearerTokenMiddleware,
+  MESSAGE_PATTERN_NAME,
+  MICROSERVICE_NAME,
+} from '@libs/common';
+import helmet from 'helmet';
+import cors from 'cors';
 
 @Module({
   imports: [
@@ -21,6 +32,13 @@ import { MICROSERVICE_NAME } from '@libs/common';
 })
 export class ApiGatewayModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply().forRoutes('*');
+    consumer.apply(cors(), helmet()).forRoutes('*');
+    consumer
+      .apply(BearerTokenMiddleware)
+      .exclude({
+        path: `users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
+        method: RequestMethod.POST,
+      })
+      .forRoutes('*');
   }
 }

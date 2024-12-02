@@ -13,7 +13,11 @@ import { lastValueFrom } from 'rxjs';
 import { IJwtPayload } from '@libs/encryption';
 import { UnauthorizedException, UseInterceptors } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
-import { WsQueryRunner, WsTransactionInterceptor } from '@libs/common';
+import {
+  MESSAGE_PATTERN_NAME,
+  WsQueryRunner,
+  WsTransactionInterceptor,
+} from '@libs/common';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -26,7 +30,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const authorization = client.handshake.headers.authorization;
       const payload = await lastValueFrom<IJwtPayload>(
-        this.authService.send('parseBearerToken', authorization),
+        this.authService.send(
+          MESSAGE_PATTERN_NAME.USER.PARSE_BEARER_TOKEN,
+          authorization,
+        ),
       ); // @todo 타입 추론이 가능한 형태로 변경해야됨, send, emit manager 와 같은 것 필요
       if (!payload) {
         throw new UnauthorizedException('인증되지 않은 사용자입니다.');

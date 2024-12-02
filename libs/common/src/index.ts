@@ -7,3 +7,4 @@ export const dayjs = Dayjs;
 export * from './const';
 export * from './interceptors';
 export * from './decorators';
+export * from './middlewares';

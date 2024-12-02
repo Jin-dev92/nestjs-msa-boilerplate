@@ -3,8 +3,14 @@ export const MICROSERVICE_NAME = {
 };
 
 export const MESSAGE_PATTERN_NAME = {
-  USER: {},
+  USER: {
+    PARSE_BEARER_TOKEN: 'user_parse_bearer_token',
+    LOGIN: 'user_login',
+    GET_USERS: 'user_get_users',
+  },
 };
-export const EVENT_NAME = {
-  USER: {},
+export const EVENT_PATTERN_NAME = {
+  USER: {
+    SIGN_UP: 'user_sign_up',
+  },
 };
