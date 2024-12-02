@@ -23,3 +23,5 @@ nestjs 기반의 microservice architecture 를 구현하기 위한 보일러플�
 docker compose up -d
 ```
 
+[//]: # (## 인프라 구조)
+[//]: # (![Infrastructure]&#40;~@source/.vuepress/public/image/2021_04_user_count.png&#41;)

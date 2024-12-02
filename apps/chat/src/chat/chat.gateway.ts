@@ -1,6 +1,9 @@
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
@@ -8,7 +11,10 @@ import { Socket } from 'socket.io';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { IJwtPayload } from '@libs/encryption';
-import { UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException, UseInterceptors } from '@nestjs/common';
+import { WsQueryRunner } from '@libs/common/decorators';
+import { QueryRunner } from 'typeorm';
+import { WsTransactionInterceptor } from '@libs/common/interceptors';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -39,11 +45,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.chatService.disconnectClient(client.data.user.sub);
   }
 
-  // @SubscribeMessage('receiveMessage')
-  // async receiveMessage(
-  //   @MessageBody() data: { message: string },
-  //   @ConnectedSocket() client: Socket,
-  // ) {
-  //   client.emit('sendMessage', data.message);
-  // }
+  @UseInterceptors(WsTransactionInterceptor)
+  @SubscribeMessage('handleMessage')
+  async handleMessage(
+    @MessageBody() data: { message: string },
+    @ConnectedSocket() client: Socket,
+    @WsQueryRunner() queryRunner: QueryRunner,
+  ) {
+    // client.emit('sendMessage', data.message);
+  }
 }
