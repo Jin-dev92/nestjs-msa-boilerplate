@@ -12,9 +12,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { IJwtPayload } from '@libs/encryption';
 import { UnauthorizedException, UseInterceptors } from '@nestjs/common';
-import { WsQueryRunner } from '@libs/common/decorators';
 import { QueryRunner } from 'typeorm';
-import { WsTransactionInterceptor } from '@libs/common/interceptors';
+import { WsQueryRunner, WsTransactionInterceptor } from '@libs/common';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {

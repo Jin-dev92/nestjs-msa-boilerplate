@@ -1,20 +1,18 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { Joi, MICROSERVICE_NAME } from '@libs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
 import { ChatModule } from './chat/chat.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRootAsync({
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) => ({
-    //     type: 'postgres',
-    //     url: configService.getOrThrow(ENVIRONMENT_KEYS.DATABASE_URL),
-    //     synchronize: true,
-    //     autoLoadEntities: true,
-    //   }),
-    // }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.getOrThrow<string>(ENVIRONMENT_KEYS.DATABASE_URL),
+      }),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/chat/.env',
@@ -22,9 +20,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         TCP_PORT: Joi.number().required(),
         DATABASE_URL: Joi.string().required(),
         HOST: Joi.string().required(),
-        POSTGRES_USER: Joi.string().required(),
-        POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_DB: Joi.string().required(),
       }),
     }),
     ChatModule,
