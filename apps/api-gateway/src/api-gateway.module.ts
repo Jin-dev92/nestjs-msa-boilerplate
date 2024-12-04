@@ -38,11 +38,11 @@ export class ApiGatewayModule implements NestModule {
       .apply(BearerTokenMiddleware)
       .exclude(
         {
-          path: `users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
+          path: `/api/users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
           method: RequestMethod.POST,
         },
         {
-          path: `users/${EVENT_PATTERN_NAME.USER.SIGN_UP}`,
+          path: `/api/users/${EVENT_PATTERN_NAME.USER.SIGN_UP}`,
           method: RequestMethod.POST,
         },
       )
