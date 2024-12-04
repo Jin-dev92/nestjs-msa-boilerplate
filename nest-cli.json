@@ -20,15 +20,6 @@
         "tsConfigPath": "apps/user/tsconfig.app.json"
       }
     },
-    "career": {
-      "type": "application",
-      "root": "apps/career",
-      "entryFile": "main",
-      "sourceRoot": "apps/career/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/career/tsconfig.app.json"
-      }
-    },
     "database": {
       "type": "library",
       "root": "libs/database",
