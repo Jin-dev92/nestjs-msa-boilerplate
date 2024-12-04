@@ -8,6 +8,9 @@ import { User } from '@libs/database';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EncryptionService } from '@libs/encryption';
+import { GetUsersDto } from './dto/get-users.dto';
+import { GetUserDto } from './dto';
+import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 
 @Injectable()
 export class UserService {
@@ -15,6 +18,7 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly encryptionService: EncryptionService,
   ) {}
+
   async signUp(dto: CreateUserDto) {
     try {
       await this.checkExistByEmail(dto.email); // 중복 확인
@@ -28,9 +32,19 @@ export class UserService {
     }
   }
 
-  async getUsers() {
-    return await this.userRepository.find();
+  async getUsers(dto: GetUsersDto) {
+    return await this.userRepository.find(dto);
   }
+
+  async getUser(dto: GetUserDto) {
+    const where: FindOptionsWhere<User> = {
+      ...dto,
+    };
+    return await this.userRepository.findOne({
+      where,
+    });
+  }
+
   async checkUserByEmail(email: string) {
     const user = await this.userRepository.findOneBy({
       email,

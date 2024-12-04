@@ -9,11 +9,12 @@ async function bootstrap() {
     {
       transport: Transport.TCP,
       options: {
-        port: +process.env['TCP_PORT'] || 3001,
+        port: parseInt(process.env['TCP_PORT']) || 3001,
         host: process.env[ENVIRONMENT_KEYS.HOST],
       },
     },
   );
+
   await app.listen();
 }
 

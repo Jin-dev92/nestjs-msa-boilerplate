@@ -8,11 +8,12 @@ import { ApiGatewayController } from './api-gateway.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import {
   BearerTokenMiddleware,
+  EVENT_PATTERN_NAME,
   MESSAGE_PATTERN_NAME,
   MICROSERVICE_NAME,
 } from '@libs/common';
 import helmet from 'helmet';
-import cors from 'cors';
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -35,10 +36,16 @@ export class ApiGatewayModule implements NestModule {
     consumer.apply(cors(), helmet()).forRoutes('*');
     consumer
       .apply(BearerTokenMiddleware)
-      .exclude({
-        path: `users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
-        method: RequestMethod.POST,
-      })
+      .exclude(
+        {
+          path: `users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
+          method: RequestMethod.POST,
+        },
+        {
+          path: `users/${EVENT_PATTERN_NAME.USER.SIGN_UP}`,
+          method: RequestMethod.POST,
+        },
+      )
       .forRoutes('*');
   }
 }

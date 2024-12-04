@@ -7,6 +7,7 @@ export const MESSAGE_PATTERN_NAME = {
     PARSE_BEARER_TOKEN: 'user_parse_bearer_token',
     LOGIN: 'user_login',
     GET_USERS: 'user_get_users',
+    GET_USER: 'user_get_user',
   },
 };
 export const EVENT_PATTERN_NAME = {

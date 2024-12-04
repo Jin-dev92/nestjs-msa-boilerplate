@@ -19,6 +19,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     const authorization = req.headers.authorization;
+    console.log('authorization', authorization);
     try {
       if (!authorization) {
         throw new UnauthorizedException('토큰이 필요합니다.');
@@ -30,7 +31,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
           authorization,
         ),
       );
-
+      console.log('payload: ', payload);
       if (['access', 'refresh'].includes(payload.type)) {
         throw new UnauthorizedException('토큰의 타입이 올바르지 않습니다.');
       }
