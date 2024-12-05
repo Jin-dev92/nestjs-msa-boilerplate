@@ -20,9 +20,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { EncryptionModule } from '@libs/encryption';
 
 @Module({
   imports: [
+    EncryptionModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/api-gateway/.env',
@@ -35,19 +37,6 @@ import { UserModule } from './user/user.module';
       }),
     }),
     ClientsModule.registerAsync([
-      {
-        name: MICROSERVICE_NAME.USER_SERVICE,
-        inject: [ConfigService],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get(ENVIRONMENT_KEYS.USER_SERVICE_HOST),
-            port: parseInt(
-              configService.get(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT),
-            ),
-          },
-        }),
-      },
       {
         name: MICROSERVICE_NAME.CHAT_SERVICE,
         inject: [ConfigService],
