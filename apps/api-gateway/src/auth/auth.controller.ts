@@ -1,9 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { EncryptionService } from '@libs/encryption';
+import { Payload } from '@nestjs/microservices';
 import { LoginDto } from './dto/login.dto';
-import { MESSAGE_PATTERN_NAME } from '@libs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -12,8 +11,8 @@ export class AuthController {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  @MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.LOGIN })
+  @Post('login')
   async login(@Payload() payload: LoginDto) {
-    return await this.authService.loginExecutes(payload);
+    return await this.authService.requestLoginExecutes(payload);
   }
 }

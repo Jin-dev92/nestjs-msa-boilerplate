@@ -6,16 +6,16 @@ import {
 import { EncryptionService } from '@libs/encryption';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dto/login.dto';
+import { ILoginResponse } from './interfaces';
 
 @Injectable()
 export class AuthService {
   constructor(
-    // private readonly client: ClientProxy,
     private readonly userService: UserService,
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async loginExecutes(dto: LoginDto) {
+  async loginExecutes(dto: LoginDto): Promise<ILoginResponse> {
     const { email } = dto;
     // 유저 조회
     const user = await this.userService.checkUserByEmail(email);

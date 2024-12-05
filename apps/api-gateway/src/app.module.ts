@@ -17,6 +17,9 @@ import {
 import * as cors from 'cors';
 import helmet from 'helmet';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ChatModule } from './chat/chat.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -59,19 +62,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         }),
       },
     ]),
-    /*
-    *
-    * [
-      {
-        name: MICROSERVICE_NAME.USER_SERVICE,
-        transport: Transport.TCP,
-      },
-      {
-        name: MICROSERVICE_NAME.CHAT_SERVICE,
-        transport: Transport.TCP,
-      },
-    ]
-    * */
+    ChatModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

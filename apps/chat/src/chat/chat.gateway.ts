@@ -8,33 +8,24 @@ import {
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { Socket } from 'socket.io';
-import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { IJwtPayload } from '@libs/encryption';
+import { EncryptionService } from '@libs/encryption';
 import { UnauthorizedException, UseInterceptors } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
-import {
-  MESSAGE_PATTERN_NAME,
-  WsQueryRunner,
-  WsTransactionInterceptor,
-} from '@libs/common';
+import { WsQueryRunner, WsTransactionInterceptor } from '@libs/common';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService,
-    private readonly authService: ClientProxy,
+    // private readonly authService: ClientProxy,
+    private readonly encryptionService: EncryptionService,
   ) {}
 
   async handleConnection(client: Socket) {
     try {
       const authorization = client.handshake.headers.authorization;
-      const payload = await lastValueFrom<IJwtPayload>(
-        this.authService.send(
-          MESSAGE_PATTERN_NAME.USER.PARSE_BEARER_TOKEN,
-          authorization,
-        ),
-      ); // @todo 타입 추론이 가능한 형태로 변경해야됨, send, emit manager 와 같은 것 필요
+      const payload =
+        await this.encryptionService.parseBearerToken(authorization);
       if (!payload) {
         throw new UnauthorizedException('인증되지 않은 사용자입니다.');
       }
