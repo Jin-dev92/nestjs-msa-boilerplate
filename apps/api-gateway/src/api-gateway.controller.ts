@@ -6,12 +6,19 @@ import { ClientProxy } from '@nestjs/microservices';
 export class ApiGatewayController {
   constructor(
     @Inject(MICROSERVICE_NAME.USER_SERVICE)
-    private readonly userService: ClientProxy,
+    private readonly userMicroService: ClientProxy,
+    @Inject(MICROSERVICE_NAME.CHAT_SERVICE)
+    private readonly chatMicroService: ClientProxy,
   ) {}
 
   @All('users/:path') // /api/users/* 로 들어오는 모든 요청을 UserService 로 보내 처리
   handleUserRequests(@Param('path') path: string, @Req() req: Request) {
     const pattern = { cmd: path };
-    return this.userService.send(pattern, req.body);
+    return this.userMicroService.send(pattern, req.body);
+  }
+  @All('chats/:path') // /api/chats/* 로 들어오는 모든 요청을 UserService 로 보내 처리
+  handleChatRequests(@Param('path') path: string, @Req() req: Request) {
+    const pattern = { cmd: path };
+    return this.chatMicroService.send(pattern, req.body);
   }
 }
