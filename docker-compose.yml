@@ -39,6 +39,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+#  databases
   postgres_user:
     image: postgres:16
     env_file:
