@@ -1,7 +1,21 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { Joi } from '@libs/common';
-import { ApiGatewayModule } from './api-gateway.module';
+import {
+  BearerTokenMiddleware,
+  EVENT_PATTERN_NAME,
+  Joi,
+  MESSAGE_PATTERN_NAME,
+  MICROSERVICE_NAME,
+} from '@libs/common';
+
+import * as cors from 'cors';
+import helmet from 'helmet';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -12,9 +26,35 @@ import { ApiGatewayModule } from './api-gateway.module';
         HTTP_PORT: Joi.number().required(),
       }),
     }),
-    ApiGatewayModule,
+    ClientsModule.register([
+      {
+        name: MICROSERVICE_NAME.USER_SERVICE,
+        transport: Transport.TCP,
+      },
+      // {
+      //   name: '_SERVICE',
+      //   transport: Transport.TCP,
+      // },
+    ]),
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(cors(), helmet()).forRoutes('*');
+    consumer
+      .apply(BearerTokenMiddleware)
+      .exclude(
+        {
+          path: `/api/users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
+          method: RequestMethod.POST,
+        },
+        {
+          path: `/api/users/${EVENT_PATTERN_NAME.USER.SIGN_UP}`,
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes('*');
+  }
+}
