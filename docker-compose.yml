@@ -19,11 +19,11 @@ services:
       dockerfile: ./apps/chat/Dockerfile
     command: yarn run start:dev chat
     ports:
-      - "3003:3003"
+      - "3002:3002"
     env_file:
       - ./apps/chat/.env
     depends_on:
-      postgres_chat:
+      mongo_chat:
         condition: service_healthy
     volumes:
       - .:/usr/src/app
@@ -58,31 +58,28 @@ services:
     ports:
       - "6001:5432"
     volumes:
-      - ./postgres/user:/var/lib/postgresql/data
+      - ./database/postgres/user:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 10
 #      start_period: 10s
-  postgres_chat:
-    image: postgres:16
+  mongo_chat:
+    image: mongo:latest
 #    environment:
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DB}
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+#      MONGO_USER: ${MONGO_USER}
+#      MONGO_PASSWORD: ${MONGO_PASSWORD}
+#      MONGO_DB: ${MONGO_DB}
     env_file:
       - ./apps/chat/.env
     ports:
-      - "6002:5432"
+      - "6002:27017"
     volumes:
-      - ./postgres/chat:/var/lib/postgresql/data
+      - ./database/mongoDB/data:/data/db
+      - ./database/mongoDB/initdb.d:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 5s
       retries: 10

@@ -4,9 +4,10 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
   BearerTokenMiddleware,
+  ENVIRONMENT_KEYS,
   EVENT_PATTERN_NAME,
   Joi,
   MESSAGE_PATTERN_NAME,
@@ -24,9 +25,43 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       envFilePath: './apps/api-gateway/.env',
       validationSchema: Joi.object({
         HTTP_PORT: Joi.number().required(),
+        USER_SERVICE_HOST: Joi.string().required(),
+        USER_SERVICE_TCP_PORT: Joi.number().required(),
+        CHAT_SERVICE_HOST: Joi.string().required(),
+        CHAT_SERVICE_TCP_PORT: Joi.number().required(),
       }),
     }),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
+      {
+        name: MICROSERVICE_NAME.USER_SERVICE,
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get(ENVIRONMENT_KEYS.USER_SERVICE_HOST),
+            port: parseInt(
+              configService.get(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT),
+            ),
+          },
+        }),
+      },
+      {
+        name: MICROSERVICE_NAME.CHAT_SERVICE,
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get(ENVIRONMENT_KEYS.CHAT_SERVICE_HOST),
+            port: parseInt(
+              configService.get(ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT),
+            ),
+          },
+        }),
+      },
+    ]),
+    /*
+    *
+    * [
       {
         name: MICROSERVICE_NAME.USER_SERVICE,
         transport: Transport.TCP,
@@ -35,7 +70,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: MICROSERVICE_NAME.CHAT_SERVICE,
         transport: Transport.TCP,
       },
-    ]),
+    ]
+    * */
   ],
   controllers: [],
   providers: [],
