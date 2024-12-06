@@ -1,18 +1,6 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  BearerTokenMiddleware,
-  ENVIRONMENT_KEYS,
-  EVENT_PATTERN_NAME,
-  Joi,
-  MESSAGE_PATTERN_NAME,
-  MICROSERVICE_NAME,
-} from '@libs/common';
+import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
 
 import * as cors from 'cors';
 import helmet from 'helmet';
@@ -36,21 +24,45 @@ import { EncryptionModule } from '@libs/encryption';
         CHAT_SERVICE_TCP_PORT: Joi.number().required(),
       }),
     }),
-    ClientsModule.registerAsync([
-      {
-        name: MICROSERVICE_NAME.CHAT_SERVICE,
-        inject: [ConfigService],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get(ENVIRONMENT_KEYS.CHAT_SERVICE_HOST),
-            port: parseInt(
-              configService.get(ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT),
-            ),
-          },
-        }),
-      },
-    ]),
+    ClientsModule.registerAsync({
+      isGlobal: true,
+      clients: [
+        {
+          name: MICROSERVICE_NAME.USER_SERVICE,
+          inject: [ConfigService],
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow(
+                ENVIRONMENT_KEYS.USER_SERVICE_HOST,
+              ),
+              port: parseInt(
+                configService.getOrThrow(
+                  ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT,
+                ),
+              ),
+            },
+          }),
+        },
+        {
+          name: MICROSERVICE_NAME.CHAT_SERVICE,
+          inject: [ConfigService],
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow(
+                ENVIRONMENT_KEYS.CHAT_SERVICE_HOST,
+              ),
+              port: parseInt(
+                configService.getOrThrow(
+                  ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT,
+                ),
+              ),
+            },
+          }),
+        },
+      ],
+    }),
     ChatModule,
     AuthModule,
     UserModule,
@@ -61,18 +73,12 @@ import { EncryptionModule } from '@libs/encryption';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(cors(), helmet()).forRoutes('*');
-    consumer
-      .apply(BearerTokenMiddleware)
-      .exclude(
-        {
-          path: `/api/users/${MESSAGE_PATTERN_NAME.USER.LOGIN}`,
-          method: RequestMethod.POST,
-        },
-        {
-          path: `/api/users/${EVENT_PATTERN_NAME.USER.SIGN_UP}`,
-          method: RequestMethod.POST,
-        },
-      )
-      .forRoutes('*');
+    // consumer
+    //   .apply(BearerTokenMiddleware)
+    //   .exclude({
+    //     path: `/auth/login`,
+    //     method: RequestMethod.POST,
+    //   })
+    //   .forRoutes('*');
   }
 }

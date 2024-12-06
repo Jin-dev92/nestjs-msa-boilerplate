@@ -5,10 +5,10 @@ export class CommonFindManyDto {
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  skip: number;
+  skip?: number = 0;
 
   @Type(() => Number)
   @IsNumber()
   @IsOptional()
-  take: number;
+  take?: number = 30;
 }

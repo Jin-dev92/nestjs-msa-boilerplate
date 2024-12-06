@@ -6,10 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import { EncryptionService } from '@libs/encryption';
-import { GetUsersDto } from './dto/get-users.dto';
-import { GetUserDto } from './dto';
+import { CreateUserDto, GetUserDto, GetUsersDto } from './dto';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 
 @Injectable()
@@ -26,14 +24,15 @@ export class UserService {
         ...dto,
         password: await this.encryptionService.hashPassword(dto.password),
       });
-      await this.userRepository.save(user);
+      return await this.userRepository.save(user);
     } catch (e) {
       throw new BadRequestException(e);
     }
   }
 
   async getUsers(dto: GetUsersDto) {
-    return await this.userRepository.find(dto);
+    const { skip, take } = dto;
+    return await this.userRepository.find({ ...dto, skip, take });
   }
 
   async getUser(dto: GetUserDto) {

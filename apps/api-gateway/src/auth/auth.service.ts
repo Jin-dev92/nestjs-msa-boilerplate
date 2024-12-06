@@ -15,7 +15,7 @@ export class AuthService {
   async requestLoginExecutes(dto: LoginDto) {
     return await lastValueFrom(
       this.userMicroservice.send<ILoginResponse, LoginDto>(
-        MESSAGE_PATTERN_NAME.USER.LOGIN,
+        { cmd: MESSAGE_PATTERN_NAME.USER.LOGIN },
         dto,
       ),
     );

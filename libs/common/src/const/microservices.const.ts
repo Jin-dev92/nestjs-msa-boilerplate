@@ -9,10 +9,9 @@ export const MESSAGE_PATTERN_NAME = {
     LOGIN: 'user_login',
     GET_USERS: 'user_get_users',
     GET_USER: 'user_get_user',
+    SIGN_UP: 'user_sign_up',
   },
 };
 export const EVENT_PATTERN_NAME = {
-  USER: {
-    SIGN_UP: 'user_sign_up',
-  },
+  USER: {},
 };
