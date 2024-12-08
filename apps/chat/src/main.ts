@@ -1,22 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ENVIRONMENT_KEYS } from '@libs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        host: process.env[ENVIRONMENT_KEYS.CHAT_SERVICE_HOST],
-        port: +process.env[ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT],
+  const app = await NestFactory.create(AppModule, {});
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [`amqp://rabbitmq:5672`],
+      queue: 'chat_queue',
+      queueOptions: {
+        durable: false,
       },
     },
-  );
-  await app.listen();
-  // const app = await NestFactory.create(AppModule, {});
-  // await app.listen(3002);
+  });
+  await app.startAllMicroservices();
 }
 
 bootstrap();

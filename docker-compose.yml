@@ -81,4 +81,10 @@ services:
       timeout: 5s
       retries: 10
 #      start_period: 10s
-
+  rabbitmq:
+    image: rabbitmq:4
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "node_health_check"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

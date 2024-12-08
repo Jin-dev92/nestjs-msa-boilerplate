@@ -29,7 +29,17 @@ import { MongooseModule } from '@nestjs/mongoose';
     ClientsModule.register([
       {
         name: MICROSERVICE_NAME.USER_SERVICE,
-        transport: Transport.TCP,
+        transport: Transport.RMQ,
+        options: {
+          urls: [
+            // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
+            `amqp://rabbitmq:5672`,
+          ],
+          queue: 'user_queue',
+          queueOptions: {
+            durable: false,
+          },
+        },
       },
     ]),
   ],

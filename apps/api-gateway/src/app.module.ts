@@ -1,6 +1,11 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
+import { BearerTokenMiddleware, Joi, MICROSERVICE_NAME } from '@libs/common';
 
 import * as cors from 'cors';
 import helmet from 'helmet';
@@ -31,16 +36,24 @@ import { EncryptionModule } from '@libs/encryption';
           name: MICROSERVICE_NAME.USER_SERVICE,
           inject: [ConfigService],
           useFactory: (configService: ConfigService) => ({
-            transport: Transport.TCP,
+            transport: Transport.RMQ,
             options: {
-              host: configService.getOrThrow(
-                ENVIRONMENT_KEYS.USER_SERVICE_HOST,
-              ),
-              port: parseInt(
-                configService.getOrThrow(
-                  ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT,
-                ),
-              ),
+              urls: [
+                // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
+                `amqp://rabbitmq:5672`,
+              ],
+              queue: 'user_queue',
+              queueOptions: {
+                durable: false,
+              },
+              // host: configService.getOrThrow(
+              //   ENVIRONMENT_KEYS.USER_SERVICE_HOST,
+              // ),
+              // port: parseInt(
+              //   configService.getOrThrow(
+              //     ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT,
+              //   ),
+              // ),
             },
           }),
         },
@@ -48,17 +61,28 @@ import { EncryptionModule } from '@libs/encryption';
           name: MICROSERVICE_NAME.CHAT_SERVICE,
           inject: [ConfigService],
           useFactory: (configService: ConfigService) => ({
-            transport: Transport.TCP,
+            transport: Transport.RMQ,
             options: {
-              host: configService.getOrThrow(
-                ENVIRONMENT_KEYS.CHAT_SERVICE_HOST,
-              ),
-              port: parseInt(
-                configService.getOrThrow(
-                  ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT,
-                ),
-              ),
+              urls: [
+                // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
+                `amqp://rabbitmq:5672`,
+              ],
+              queue: 'chat_queue',
+              queueOptions: {
+                durable: false,
+              },
             },
+            // transport: Transport.TCP,
+            // options: {
+            //   host: configService.getOrThrow(
+            //     ENVIRONMENT_KEYS.CHAT_SERVICE_HOST,
+            //   ),
+            //   port: parseInt(
+            //     configService.getOrThrow(
+            //       ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT,
+            //     ),
+            //   ),
+            // },
           }),
         },
       ],
@@ -73,12 +97,18 @@ import { EncryptionModule } from '@libs/encryption';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(cors(), helmet()).forRoutes('*');
-    // consumer
-    //   .apply(BearerTokenMiddleware)
-    //   .exclude({
-    //     path: `/auth/login`,
-    //     method: RequestMethod.POST,
-    //   })
-    //   .forRoutes('*');
+    consumer
+      .apply(BearerTokenMiddleware)
+      .exclude(
+        {
+          path: `/auth/login`,
+          method: RequestMethod.POST,
+        },
+        {
+          path: '/users',
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes('*');
   }
 }
