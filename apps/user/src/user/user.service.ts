@@ -7,8 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
 import { EncryptionService } from '@libs/encryption';
-import { GetUserDto, GetUsersDto } from './dto';
-import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import { GetUsersDto } from './dto';
 import { UserMicroService } from '@libs/common';
 
 @Injectable()
@@ -36,13 +35,16 @@ export class UserService {
     return await this.userRepository.find({ ...dto, skip, take });
   }
 
-  async getUser(dto: GetUserDto) {
-    const where: FindOptionsWhere<User> = {
-      ...dto,
-    };
-    return await this.userRepository.findOne({
-      where,
+  async getUserById(dto: UserMicroService.GetUserRequest) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: dto.id,
+      },
     });
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 유저입니다.');
+    }
+    return user;
   }
 
   async checkUserByEmail(email: string) {

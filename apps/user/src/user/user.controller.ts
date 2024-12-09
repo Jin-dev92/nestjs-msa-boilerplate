@@ -1,7 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserMicroService } from '@libs/common';
-import { GetUserDto, GetUsersDto } from './dto';
 
 @Controller()
 export class UserController implements UserMicroService.UserServiceController {
@@ -22,13 +21,12 @@ export class UserController implements UserMicroService.UserServiceController {
     return { id: user.id };
   }
 
-  /*@MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.GET_USERS })*/
-  async getUsers(payload: GetUsersDto) {
-    return await this.userService.getUsers(payload);
-  }
-
-  // @MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.GET_USER })
-  async getUser(payload: GetUserDto) {
-    return await this.userService.getUser(payload);
+  async getUser(payload: UserMicroService.GetUserRequest) {
+    const user = await this.userService.getUserById(payload);
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    };
   }
 }

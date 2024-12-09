@@ -31,13 +31,13 @@ export interface ParseBearerTokenResponse {
 }
 
 export interface GetUserRequest {
-  id: string;
+  id: number;
 }
 
 export interface GetUserResponse {
-  id: string;
+  id: number;
   email: string;
-  name: string;
+  username: string;
 }
 
 export interface SingUpRequest {
