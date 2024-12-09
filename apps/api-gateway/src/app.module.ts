@@ -5,7 +5,12 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { BearerTokenMiddleware, Joi, MICROSERVICE_NAME } from '@libs/common';
+import {
+  BearerTokenMiddleware,
+  Joi,
+  MICROSERVICE_NAME,
+  UserMicroService,
+} from '@libs/common';
 
 import * as cors from 'cors';
 import helmet from 'helmet';
@@ -14,6 +19,7 @@ import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { EncryptionModule } from '@libs/encryption';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -36,55 +42,30 @@ import { EncryptionModule } from '@libs/encryption';
           name: MICROSERVICE_NAME.USER_SERVICE,
           inject: [ConfigService],
           useFactory: (configService: ConfigService) => ({
-            transport: Transport.RMQ,
+            transport: Transport.GRPC,
             options: {
-              urls: [
-                // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
-                `amqp://rabbitmq:5672`,
-              ],
-              queue: 'user_queue',
-              queueOptions: {
-                durable: false,
-              },
-              // host: configService.getOrThrow(
-              //   ENVIRONMENT_KEYS.USER_SERVICE_HOST,
-              // ),
-              // port: parseInt(
-              //   configService.getOrThrow(
-              //     ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT,
-              //   ),
-              // ),
+              package: UserMicroService.protobufPackage,
+              protoPath: join(process.cwd(), UserMicroService.USER_PROTO_PATH),
             },
           }),
         },
-        {
-          name: MICROSERVICE_NAME.CHAT_SERVICE,
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService) => ({
-            transport: Transport.RMQ,
-            options: {
-              urls: [
-                // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
-                `amqp://rabbitmq:5672`,
-              ],
-              queue: 'chat_queue',
-              queueOptions: {
-                durable: false,
-              },
-            },
-            // transport: Transport.TCP,
-            // options: {
-            //   host: configService.getOrThrow(
-            //     ENVIRONMENT_KEYS.CHAT_SERVICE_HOST,
-            //   ),
-            //   port: parseInt(
-            //     configService.getOrThrow(
-            //       ENVIRONMENT_KEYS.CHAT_SERVICE_TCP_PORT,
-            //     ),
-            //   ),
-            // },
-          }),
-        },
+        // {
+        //   name: MICROSERVICE_NAME.CHAT_SERVICE,
+        //   inject: [ConfigService],
+        //   useFactory: (configService: ConfigService) => ({
+        //     transport: Transport.RMQ,
+        //     options: {
+        //       urls: [
+        //         // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
+        //         `amqp://rabbitmq:5672`,
+        //       ],
+        //       queue: 'chat_queue',
+        //       queueOptions: {
+        //         durable: false,
+        //       },
+        //     },
+        //   }),
+        // },
       ],
     }),
     ChatModule,

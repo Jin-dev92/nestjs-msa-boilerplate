@@ -7,8 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
 import { EncryptionService } from '@libs/encryption';
-import { CreateUserDto, GetUserDto, GetUsersDto } from './dto';
+import { GetUserDto, GetUsersDto } from './dto';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import { UserMicroService } from '@libs/common';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async signUp(dto: CreateUserDto) {
+  async signUp(dto: UserMicroService.SingUpRequest) {
     try {
       await this.checkExistByEmail(dto.email); // 중복 확인
       const user = this.userRepository.create({

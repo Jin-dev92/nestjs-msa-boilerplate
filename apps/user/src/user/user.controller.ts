@@ -1,16 +1,10 @@
-import {
-  ClassSerializerInterceptor,
-  Controller,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { MESSAGE_PATTERN_NAME } from '@libs/common';
-import { CreateUserDto, GetUserDto, GetUsersDto } from './dto';
+import { UserMicroService } from '@libs/common';
+import { GetUserDto, GetUsersDto } from './dto';
 
-@UseInterceptors(ClassSerializerInterceptor)
-@Controller('user')
-export class UserController {
+@Controller()
+export class UserController implements UserMicroService.UserServiceController {
   constructor(private readonly userService: UserService) {}
 
   /*
@@ -18,20 +12,23 @@ export class UserController {
   @EventPattern() // 그냥 던져놓고 consume만 하면 될 때 사용.
 */
 
+  /*
+  Grpc 로 변경으로 인한 주석
   @MessagePattern({
     cmd: MESSAGE_PATTERN_NAME.USER.SIGN_UP,
-  })
-  async signUp(@Payload() payload: CreateUserDto) {
-    return await this.userService.signUp(payload);
+  })*/
+  async signUp(payload: UserMicroService.SingUpRequest) {
+    const user = await this.userService.signUp(payload);
+    return { id: user.id };
   }
 
-  @MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.GET_USERS })
-  async getUsers(@Payload() payload: GetUsersDto) {
+  /*@MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.GET_USERS })*/
+  async getUsers(payload: GetUsersDto) {
     return await this.userService.getUsers(payload);
   }
 
-  @MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.GET_USER })
-  async getUser(@Payload() payload: GetUserDto) {
+  // @MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.GET_USER })
+  async getUser(payload: GetUserDto) {
     return await this.userService.getUser(payload);
   }
 }

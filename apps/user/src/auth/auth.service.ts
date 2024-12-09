@@ -5,8 +5,7 @@ import {
 } from '@nestjs/common';
 import { EncryptionService } from '@libs/encryption';
 import { UserService } from '../user/user.service';
-import { LoginDto } from './dto/login.dto';
-import { ILoginResponse } from './interfaces';
+import { UserMicroService } from '@libs/common';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +14,7 @@ export class AuthService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  async loginExecutes(dto: LoginDto): Promise<ILoginResponse> {
+  async loginExecutes(dto: UserMicroService.LoginRequest) {
     const { email } = dto;
     // 유저 조회
     const user = await this.userService.checkUserByEmail(email);

@@ -1,24 +1,22 @@
-import {
-  ClassSerializerInterceptor,
-  Controller,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { EncryptionService } from '@libs/encryption';
-import { LoginDto } from './dto/login.dto';
-import { MESSAGE_PATTERN_NAME } from '@libs/common';
+import { UserMicroService } from '@libs/common';
 
-@UseInterceptors(ClassSerializerInterceptor)
-@Controller('auth')
-export class AuthController {
+@Controller()
+export class AuthController implements UserMicroService.AuthServiceController {
   constructor(
     private readonly authService: AuthService,
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  @MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.LOGIN })
-  async login(@Payload() payload: LoginDto) {
-    return await this.authService.loginExecutes(payload);
+  /*@MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.LOGIN })*/
+  async login(payload: UserMicroService.LoginRequest) {
+    const tokens = await this.authService.loginExecutes(payload);
+    return tokens;
+  }
+
+  parseBearerToken(request: UserMicroService.ParseBearerTokenRequest) {
+    return undefined;
   }
 }

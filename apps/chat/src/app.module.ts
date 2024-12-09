@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ENVIRONMENT_KEYS, Joi, MICROSERVICE_NAME } from '@libs/common';
+import {
+  ENVIRONMENT_KEYS,
+  Joi,
+  MICROSERVICE_NAME,
+  UserMicroService,
+} from '@libs/common';
 import { ChatModule } from './chat/chat.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -26,22 +32,42 @@ import { MongooseModule } from '@nestjs/mongoose';
       }),
     }),
     ChatModule,
-    ClientsModule.register([
+    ClientsModule.registerAsync(
       {
-        name: MICROSERVICE_NAME.USER_SERVICE,
-        transport: Transport.RMQ,
-        options: {
-          urls: [
-            // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
-            `amqp://rabbitmq:5672`,
-          ],
-          queue: 'user_queue',
-          queueOptions: {
-            durable: false,
+        clients: [
+          {
+            name: MICROSERVICE_NAME.USER_SERVICE,
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+              transport: Transport.GRPC,
+              options: {
+                package: UserMicroService.protobufPackage,
+                protoPath: join(
+                  process.cwd(),
+                  UserMicroService.USER_PROTO_PATH,
+                ),
+              },
+            }),
           },
-        },
+        ],
       },
-    ]),
+      /*
+      RabbitMQ
+      {
+          name: MICROSERVICE_NAME.USER_SERVICE,
+          transport: Transport.RMQ,
+          options: {
+            urls: [
+              // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
+              `amqp://rabbitmq:5672`,
+            ],
+            queue: 'user_queue',
+            queueOptions: {
+              durable: false,
+            },
+          },
+        },*/
+    ),
   ],
   controllers: [],
   providers: [],
