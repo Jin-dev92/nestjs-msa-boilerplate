@@ -1,6 +1,6 @@
 export const MICROSERVICE_NAME = {
-  USER_SERVICE: 'USER_SERVICE',
-  CHAT_SERVICE: 'CHAT_SERVICE',
+  USER_SERVICE: 'UserService',
+  CHAT_SERVICE: 'ChatService',
 };
 
 export const MESSAGE_PATTERN_NAME = {

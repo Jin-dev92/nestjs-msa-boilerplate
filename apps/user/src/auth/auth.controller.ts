@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { EncryptionService } from '@libs/encryption';
 import { UserMicroService } from '@libs/common';
 
+@UserMicroService.AuthServiceControllerMethods()
 @Controller()
 export class AuthController implements UserMicroService.AuthServiceController {
   constructor(

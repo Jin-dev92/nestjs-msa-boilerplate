@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserMicroService } from '@libs/common';
 
+@UserMicroService.UserServiceControllerMethods()
 @Controller()
 export class UserController implements UserMicroService.UserServiceController {
   constructor(private readonly userService: UserService) {}
