@@ -9,6 +9,7 @@ import {
   BearerTokenMiddleware,
   Joi,
   MICROSERVICE_NAME,
+  traceInterceptor,
   UserMicroService,
 } from '@libs/common';
 
@@ -44,6 +45,9 @@ import { join } from 'path';
           useFactory: (configService: ConfigService) => ({
             transport: Transport.GRPC,
             options: {
+              channelOptions: {
+                interceptors: [traceInterceptor('gateway')],
+              },
               package: UserMicroService.protobufPackage,
               protoPath: join(process.cwd(), UserMicroService.USER_PROTO_PATH),
             },
@@ -53,16 +57,13 @@ import { join } from 'path';
         //   name: MICROSERVICE_NAME.CHAT_SERVICE,
         //   inject: [ConfigService],
         //   useFactory: (configService: ConfigService) => ({
-        //     transport: Transport.RMQ,
+        //     transport: Transport.GRPC,
         //     options: {
-        //       urls: [
-        //         // `amqp://rabbitmq:${configService.getOrThrow<number>(ENVIRONMENT_KEYS.USER_SERVICE_TCP_PORT)}`,
-        //         `amqp://rabbitmq:5672`,
-        //       ],
-        //       queue: 'chat_queue',
-        //       queueOptions: {
-        //         durable: false,
+        //       channelOptions: {
+        //         interceptors: [traceInterceptor('gateway')],
         //       },
+        //       package: UserMicroService.protobufPackage,
+        //       protoPath: join(process.cwd(), UserMicroService.USER_PROTO_PATH),
         //     },
         //   }),
         // },

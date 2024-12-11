@@ -1,22 +1,30 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
-import { ClientProxy } from '@nestjs/microservices';
-import { MESSAGE_PATTERN_NAME, MICROSERVICE_NAME } from '@libs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  constructMetadataUtils,
+  MICROSERVICE_NAME,
+  UserMicroService,
+} from '@libs/common';
 import { lastValueFrom } from 'rxjs';
-import { ILoginResponse } from '../../../user/src/auth/interfaces';
+import { ClientGrpc } from '@nestjs/microservices';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
+  authService: UserMicroService.AuthServiceClient;
   constructor(
     @Inject(MICROSERVICE_NAME.USER_SERVICE)
-    private readonly userMicroservice: ClientProxy,
+    private readonly userMicroservice: ClientGrpc,
   ) {}
+  onModuleInit() {
+    this.authService = this.userMicroservice.getService(
+      MICROSERVICE_NAME.USER_SERVICE,
+    );
+  }
 
-  async requestLoginExecutes(dto: LoginDto) {
+  async requestLoginExecutes(dto: UserMicroService.LoginRequest) {
     return await lastValueFrom(
-      this.userMicroservice.send<ILoginResponse, LoginDto>(
-        { cmd: MESSAGE_PATTERN_NAME.USER.LOGIN },
+      this.authService.login(
         dto,
+        constructMetadataUtils(AuthService.name, 'requestLoginExecutes'),
       ),
     );
   }
