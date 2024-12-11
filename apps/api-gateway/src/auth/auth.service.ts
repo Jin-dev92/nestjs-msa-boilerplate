@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import {
-  constructMetadataUtils,
+  MetaDataBuilder,
   MICROSERVICE_NAME,
   UserMicroService,
 } from '@libs/common';
@@ -24,7 +24,11 @@ export class AuthService implements OnModuleInit {
     return await lastValueFrom(
       this.authService.login(
         dto,
-        constructMetadataUtils(AuthService.name, 'requestLoginExecutes'),
+        new MetaDataBuilder()
+          .setClientClass(AuthService.name)
+          .setClientMethod('requestLoginExecutes')
+          .build(),
+        // constructMetadataUtils(AuthService.name, 'requestLoginExecutes'),
       ),
     );
   }
