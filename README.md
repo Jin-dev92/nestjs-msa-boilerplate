@@ -16,7 +16,8 @@ nestjs 기반의 microservice architecture 를 구현하기 위한 보일러플�
     - pipes - 공통 파이프
   - database - 공통으로 사용할 데이터베이스 엔티티 및 설정
   - encryption - 공통으로 사용할 암호화 라이브러리
-
+  - proto - gRPC 프로토콜을 사용하기 위한 프로토 파일
+  - kubernetes - 쿠버네티스 학습 관련 내용.
 ## Running the docker container
 
 ```bash

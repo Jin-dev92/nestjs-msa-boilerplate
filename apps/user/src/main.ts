@@ -1,22 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ENVIRONMENT_KEYS, UserMicroService } from '@libs/common';
+import {
+  ENVIRONMENT_KEYS,
+  GrpcInterceptor,
+  UserMicroService,
+} from '@libs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-
+  app.useGlobalInterceptors(new GrpcInterceptor());
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
       package: UserMicroService.protobufPackage,
-      protoPath: join(process.cwd(), UserMicroService.USER_PROTO_PATH),
+      protoPath: join(process.cwd(), 'proto/user.proto'),
       url: configService.getOrThrow(ENVIRONMENT_KEYS.GRPC_USER_SERVICE_URL),
     },
-
     /*
     *  RabbitMQ
     * transport: Transport.RMQ,

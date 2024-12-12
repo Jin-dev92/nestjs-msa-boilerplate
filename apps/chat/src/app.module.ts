@@ -4,6 +4,7 @@ import {
   ENVIRONMENT_KEYS,
   Joi,
   MICROSERVICE_NAME,
+  traceInterceptor,
   UserMicroService,
 } from '@libs/common';
 import { ChatModule } from './chat/chat.module';
@@ -41,11 +42,11 @@ import { join } from 'path';
             useFactory: (configService: ConfigService) => ({
               transport: Transport.GRPC,
               options: {
+                channelOptions: {
+                  interceptors: [traceInterceptor('chat')],
+                },
                 package: UserMicroService.protobufPackage,
-                protoPath: join(
-                  process.cwd(),
-                  UserMicroService.USER_PROTO_PATH,
-                ),
+                protoPath: join(process.cwd(), 'proto/user.proto'),
               },
             }),
           },

@@ -1,24 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MicroserviceOptions } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { ENVIRONMENT_KEYS, UserMicroService } from '@libs/common';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {});
-  app.connectMicroservice<MicroserviceOptions>({});
-  await app.startAllMicroservices();
+  const configService = app.get('ConfigService');
 
-  /*
-  RabbitMQ
-  * transport: Transport.RMQ,
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
     options: {
-      urls: [`amqp://rabbitmq:5672`],
-      queue: 'chat_queue',
-      queueOptions: {
-        durable: false,
-      },
+      package: UserMicroService.protobufPackage,
+      protoPath: join(process.cwd(), 'proto/chat.proto'),
+      url: configService.getOrThrow(ENVIRONMENT_KEYS.GRPC_CHAT_SERVICE_URL),
     },
-  *
-  * */
+  });
+  /*  모듈 내 글로벌 설정 */
+
+  await app.startAllMicroservices();
 }
 
 bootstrap();
