@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-app
+    type: backend
+
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+        type: backend
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+          ports:
+            - containerPort: 80
+          livenessProbe: # 컨테이너가 잘 작동하고 살아있는지 체크한다. unHealthy 시, 컨테이너를 재시작한다.
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+  selector:
+    matchLabels:
+      app: nginx-app
+      type: backend

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-app
+    type: backend
+spec:
+  selector:
+    matchLabels:
+      app: nginx-app
+      type: backend
+  replicas: 20
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+        type: backend
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.20
+          ports:
+            - containerPort: 80
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1

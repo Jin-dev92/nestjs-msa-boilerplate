@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-cluster-ip-service
+spec:
+  selector:
+    app: nginx-app
+    type: backend
+  type: ClusterIP
+  ports:
+    - port: 80 # 클러스터 포트
+      targetPort: 80 # 컨테이너 포트
+
+# 컨테이너 내에서 클러스터 IP 가 잘 작동하는지 확인하는 방법 >> test-curl 컨테이너를 생성하여 테스트
+# kubectl run text-cul --rm -it --image=curlimages/curl -- /bin/sh

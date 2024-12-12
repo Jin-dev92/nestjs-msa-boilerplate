@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nginx-pv
+spec:
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce # (RWO) - Read Write 모드로 하나의 노드만 점유 가능.
+#    - ReadOnlyMany # (ROX) - Read Only 모드로 여러 노드에서 점유 가능
+#    - ReadWriteMany # (RWX) - Read Write 모드로 여러 노드에서 점유 가능 (NFS)
+  hostPath:
+    type: DirectoryOrCreate
+    path: "/mnt/data"
+
+# 직접 삭제하는거 아니면 영구적으로 삭제되지 않음
