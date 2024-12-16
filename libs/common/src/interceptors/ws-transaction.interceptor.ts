@@ -4,31 +4,30 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { catchError, Observable, tap } from 'rxjs';
-import { DataSource } from 'typeorm';
+import { catchError, finalize, Observable, tap } from 'rxjs';
+import { Mongoose } from 'mongoose';
 
 @Injectable()
 export class WsTransactionInterceptor implements NestInterceptor {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly connection: Mongoose) {}
 
   async intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Promise<Observable<any>> {
     const client = context.switchToWs().getClient();
-    const qr = this.dataSource.createQueryRunner();
-    await qr.connect();
-    await qr.startTransaction();
-    client.data.queryRunner = qr;
+    const session = await this.connection.startSession();
+    client.data.mongooseSession = session;
     return next.handle().pipe(
       catchError(async (error) => {
-        await qr.rollbackTransaction();
-        await qr.release();
+        await session.abortTransaction();
         throw error;
       }),
       tap(async () => {
-        await qr.commitTransaction();
-        await qr.release();
+        await session.commitTransaction();
+      }),
+      finalize(async () => {
+        await session.endSession();
       }),
     );
   }

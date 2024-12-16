@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
-    command: yarn run start:dev api-gateway
+    command: yarn start:dev api-gateway
     ports:
       - "3000:3000"
     env_file:
@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/chat/Dockerfile
-    command: yarn run start:dev chat
+    command: yarn start:dev chat
     env_file:
       - ./apps/chat/.env
     depends_on:
@@ -30,7 +30,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/user/Dockerfile
-    command: yarn run start:dev user
+    command: yarn start:dev user
     depends_on:
       postgres_user:
         condition: service_healthy

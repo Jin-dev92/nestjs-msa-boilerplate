@@ -10,14 +10,13 @@ import { ChatService } from './chat.service';
 import { Socket } from 'socket.io';
 import { EncryptionService } from '@libs/encryption';
 import { UnauthorizedException, UseInterceptors } from '@nestjs/common';
-import { QueryRunner } from 'typeorm';
-import { WsQueryRunner, WsTransactionInterceptor } from '@libs/common';
+import { WsMongooseSession, WsTransactionInterceptor } from '@libs/common';
+import { ClientSession } from 'mongoose';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService,
-    // private readonly authService: ClientProxy,
     private readonly encryptionService: EncryptionService,
   ) {}
 
@@ -47,7 +46,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleMessage(
     @MessageBody() data: { message: string },
     @ConnectedSocket() client: Socket,
-    @WsQueryRunner() queryRunner: QueryRunner,
+    @WsMongooseSession() session: ClientSession,
   ) {
     // client.emit('sendMessage', data.message);
   }
