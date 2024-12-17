@@ -1,0 +1,77 @@
+version: "3.8"
+
+services:
+  gateway:
+    build: kpasd002/msa-nestjs-gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./apps/api-gateway/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  chat:
+    build: kpasd002/msa-nestjs-chat
+    env_file:
+      - ./apps/chat/.env
+    depends_on:
+      mongo_chat:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  user:
+    build: kpasd002/msa-nestjs-user
+    depends_on:
+      postgres_user:
+        condition: service_healthy
+    env_file:
+      - ./apps/user/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  #  databases
+  postgres_user:
+    image: postgres:16
+    env_file:
+      - ./apps/user/.env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    #    environment:
+    #      POSTGRES_USER: ${POSTGRES_USER}
+    #      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    #      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "6001:5432"
+    volumes:
+      - ./database/postgres/user:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  #      start_period: 10s
+  mongo_chat:
+    image: mongo:latest
+    env_file:
+      - ./apps/chat/.env
+    ports:
+      - "6002:27017"
+    volumes:
+      - ./database/mongoDB/data:/data/db
+      - ./database/mongoDB/initdb.d:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 10
+#      start_period: 10s
+#  rabbitmq:
+#    image: rabbitmq:4
+#    healthcheck:
+#      test: ["CMD", "rabbitmqctl", "node_health_check"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 10
