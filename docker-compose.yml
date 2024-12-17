@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
+      target: development
     command: yarn start:dev api-gateway
     ports:
       - "3000:3000"
@@ -17,6 +18,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/chat/Dockerfile
+      target: development
     command: yarn start:dev chat
     env_file:
       - ./apps/chat/.env
@@ -30,6 +32,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/user/Dockerfile
+      target: development
     command: yarn start:dev user
     depends_on:
       postgres_user:

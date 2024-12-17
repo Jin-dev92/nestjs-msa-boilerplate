@@ -1,17 +1,18 @@
 FROM node:alpine AS development
 
 WORKDIR /usr/src/app
-# 의존성 설치 단계
-COPY package.json ./
+
+COPY package*.json ./
 COPY yarn.lock ./
-COPY tsconfig.json tsconfig.json
-COPY nest-cli.json nest-cli.json
+COPY tsconfig.json ./
+COPY nest-cli.json ./
 
 RUN yarn install
 
 # 서버 코드 빌드 및 실행 단계
 COPY apps/chat apps/chat
 COPY libs libs
+
 RUN yarn build chat
 
 CMD ["yarn", "start:dev", "chat"]
@@ -23,7 +24,7 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
+COPY package*.json ./
 COPY yarn.lock ./
 
 RUN yarn install --production

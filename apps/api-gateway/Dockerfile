@@ -2,15 +2,14 @@ FROM node:alpine AS development
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
+COPY package*.json ./
 COPY yarn.lock ./
-COPY tsconfig.json tsconfig.json
-COPY nest-cli.json nest-cli.json
+COPY tsconfig.json ./
+COPY nest-cli.json ./
 
 RUN yarn install
 
-#COPY . .
-# DockerFile 최적화
+# 프로ㅜ젝트 빌드에 필요한 폴더 복사
 COPY apps/api-gateway apps/api-gateway
 COPY libs libs
 
@@ -26,7 +25,7 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
+COPY package*.json ./
 COPY yarn.lock ./
 
 RUN yarn install --production
