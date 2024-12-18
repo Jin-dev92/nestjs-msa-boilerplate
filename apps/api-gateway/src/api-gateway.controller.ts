@@ -2,6 +2,7 @@ import { All, Controller, Inject, Param, Req } from '@nestjs/common';
 import { MICROSERVICE_NAME } from '@libs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
+// 현재 사용하지 않는 컨트롤러.
 @Controller('api')
 export class ApiGatewayController {
   constructor(

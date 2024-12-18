@@ -21,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { EncryptionModule } from '@libs/encryption';
 import { join } from 'path';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { join } from 'path';
     ChatModule,
     AuthModule,
     UserModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],
@@ -89,6 +91,10 @@ export class AppModule implements NestModule {
         {
           path: '/users',
           method: RequestMethod.POST,
+        },
+        {
+          path: '/health',
+          method: RequestMethod.GET,
         },
       )
       .forRoutes('*');

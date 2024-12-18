@@ -27,13 +27,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{.Chart.Name }}-user-config-map
+            - secretRef:
+                name: {{.Chart.Name }}-user-secret
           livenessProbe:
-            httpGet:
-              port: 3000
-              path: "/health"
+            tcpSocket:
+              port: 3001
             periodSeconds: 5
           readinessProbe:
-            httpGet:
-              port: 3000
-              path: "/health"
+            tcpSocket:
+              port: 3001
             periodSeconds: 5

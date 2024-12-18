@@ -10,9 +10,10 @@ async function bootstrap() {
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
+    /*@Todo chat.proto 생성 */
     options: {
       package: UserMicroService.protobufPackage,
-      protoPath: join(process.cwd(), 'proto/chat.proto'),
+      protoPath: join(process.cwd(), 'proto/user.proto'),
       url: configService.getOrThrow(ENVIRONMENT_KEYS.GRPC_CHAT_SERVICE_URL),
     },
   });
