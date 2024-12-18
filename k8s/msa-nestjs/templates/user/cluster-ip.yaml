@@ -6,9 +6,9 @@ metadata:
   name: {{.Chart.Name }}-user-cluster-ip
 spec:
   ports:
-    - port: 3000
+    - port: 3001
       protocol: TCP
-      targetPort: 3000
+      targetPort: 3001
   selector:
     app: user
   type: ClusterIP

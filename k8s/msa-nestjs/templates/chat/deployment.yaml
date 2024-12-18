@@ -23,7 +23,7 @@ spec:
         - name: chat-container
           image: kpasd002/msa-nestjs-chat:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 3001
           envFrom:
             - configMapRef:
                 name: {{.Chart.Name }}-chat-config-map
@@ -33,7 +33,9 @@ spec:
             tcpSocket:
               port: 3001
             periodSeconds: 5
+            initialDelaySeconds: 5
           readinessProbe:
             tcpSocket:
               port: 3001
             periodSeconds: 5
+            initialDelaySeconds: 5
