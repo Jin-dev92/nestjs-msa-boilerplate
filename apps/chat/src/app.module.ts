@@ -24,8 +24,7 @@ import { join } from 'path';
       isGlobal: true,
       envFilePath: './apps/chat/.env',
       validationSchema: Joi.object({
-        CHAT_SERVICE_TCP_PORT: Joi.number().required(),
-        CHAT_SERVICE_HOST: Joi.string().required(),
+        GRPC_CHAT_SERVICE_URL: Joi.string().required(),
         DATABASE_URL: Joi.string().required(),
         MONGOOSE_USER: Joi.string().required(),
         MONGOOSE_PASSWORD: Joi.string().required(),

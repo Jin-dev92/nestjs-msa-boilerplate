@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Chart.Name }}-user-deployment
+  labels:
+    app: user
+spec:
+  replicas: {{ .Values.user.replicas }}
+  selector:
+    matchLabels:
+      app: user
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+        - name: user-container
+          image: kpasd002/msa-nestjs-user:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: {{.Chart.Name }}-user-config-map
+          livenessProbe:
+            httpGet:
+              port: 3000
+              path: "/health"
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              port: 3000
+              path: "/health"
+            periodSeconds: 5

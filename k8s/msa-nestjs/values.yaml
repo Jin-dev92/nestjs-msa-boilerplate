@@ -1,0 +1,22 @@
+gateway:
+  replicas: 1
+user:
+  replicas: 1
+  DATABASE_URL: "postgresql://postgres:postgres@postgres_user:5432/postgres"
+
+  KAKAO_CLIENT_ID: "693bc57da622feed09bda333bd4c5f27"
+  KAKAO_CLIENT_SECRET: "6S7FXVYbLIIDDq6oVVEPhUPsFKnnO293"
+  KAKAO_REDIRECT_URI: "http://localhost:3000/auth/kakao/login"
+
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+  POSTGRES_DB: "user"
+
+  GRPC_USER_SERVICE_URL: "user:3001"
+chat:
+  replicas: 1
+  GRPC_CHAT_SERVICE_URL: "chat:3001"
+  DATABASE_URL: "mongodb+srv://jindevst:6oBEYHQLIN2H3PbD@chat-cluster0.6vmeg.mongodb.net/?retryWrites=true&w=majority&appName=Chat-Cluster0"
+  MONGOOSE_USER: "jindevst"
+  MONGOOSE_PASSWORD: "6oBEYHQLIN2H3PbD"
+  MONGOOSE_DB: "chat-cluster0.6vmeg.mongodb.net"
