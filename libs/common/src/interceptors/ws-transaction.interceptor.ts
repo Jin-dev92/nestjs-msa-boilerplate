@@ -5,11 +5,15 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { catchError, finalize, Observable, tap } from 'rxjs';
-import { Mongoose } from 'mongoose';
+import { Connection } from 'mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
 
 @Injectable()
 export class WsTransactionInterceptor implements NestInterceptor {
-  constructor(private readonly connection: Mongoose) {}
+  constructor(
+    @InjectConnection()
+    private readonly connection: Connection,
+  ) {}
 
   async intercept(
     context: ExecutionContext,

@@ -9,8 +9,11 @@ import { Joi } from '@libs/common';
     JwtModule,
     // UserModule,
     ConfigModule.forRoot({
+      envFilePath: './libs/encryption/.env',
       validationSchema: Joi.object({
         AUTH_ROUNDS: Joi.number().required(),
+        JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
+        JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
       }),
     }),
   ],
