@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: user
-  name: {{.Chart.Name }}-user-node-port
+  name: {{.Chart.Name }}-user-cluster-ip
 spec:
   ports:
     - port: 3000

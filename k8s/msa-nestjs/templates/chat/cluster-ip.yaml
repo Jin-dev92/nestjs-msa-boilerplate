@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: chat
-  name: {{.Chart.Name }}-chat-node-port
+  name: {{.Chart.Name }}-chat-cluster-ip
 spec:
   ports:
     - port: 3000
