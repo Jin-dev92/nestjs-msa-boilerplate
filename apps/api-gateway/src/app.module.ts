@@ -43,16 +43,25 @@ import { HealthModule } from './health/health.module';
         {
           name: MICROSERVICE_NAME.USER_SERVICE,
           inject: [ConfigService],
-          useFactory: (configService: ConfigService) => ({
-            transport: Transport.GRPC,
-            options: {
+          useFactory: (configService: ConfigService) => {
+            const options = {
               channelOptions: {
                 interceptors: [traceInterceptor('gateway')],
               },
               package: UserMicroService.protobufPackage,
               protoPath: join(process.cwd(), 'proto/user.proto'),
-            },
-          }),
+            };
+            return {
+              transport: Transport.GRPC,
+              options: {
+                channelOptions: {
+                  interceptors: [traceInterceptor('gateway')],
+                },
+                package: UserMicroService.protobufPackage,
+                protoPath: join(process.cwd(), 'proto/user.proto'),
+              },
+            };
+          },
         },
         // {
         //   name: MICROSERVICE_NAME.CHAT_SERVICE,
@@ -94,6 +103,10 @@ export class AppModule implements NestModule {
         },
         {
           path: '/health',
+          method: RequestMethod.GET,
+        },
+        {
+          path: '/health/:path',
           method: RequestMethod.GET,
         },
       )
