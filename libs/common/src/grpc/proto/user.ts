@@ -5,6 +5,7 @@
 // source: proto/user.proto
 
 /* eslint-disable */
+import { Metadata } from '@grpc/grpc-js';
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
@@ -79,26 +80,28 @@ export interface SingUpResponse {
 export const USER_PACKAGE_NAME = "user";
 
 export interface AuthServiceClient {
-  login(request: LoginRequest): Observable<LoginResponse>;
+  login(request: LoginRequest, metadata?: Metadata): Observable<LoginResponse>;
 
-  parseBearerToken(request: ParseBearerTokenRequest): Observable<ParseBearerTokenResponse>;
+  parseBearerToken(request: ParseBearerTokenRequest, metadata?: Metadata): Observable<ParseBearerTokenResponse>;
 
   /** rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse); */
 
-  hashPassword(request: HashPasswordRequest): Observable<HashPasswordResponse>;
+  hashPassword(request: HashPasswordRequest, metadata?: Metadata): Observable<HashPasswordResponse>;
 }
 
 export interface AuthServiceController {
-  login(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+  login(request: LoginRequest, metadata?: Metadata): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
 
   parseBearerToken(
     request: ParseBearerTokenRequest,
+    metadata?: Metadata,
   ): Promise<ParseBearerTokenResponse> | Observable<ParseBearerTokenResponse> | ParseBearerTokenResponse;
 
   /** rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse); */
 
   hashPassword(
     request: HashPasswordRequest,
+    metadata?: Metadata,
   ): Promise<HashPasswordResponse> | Observable<HashPasswordResponse> | HashPasswordResponse;
 }
 
@@ -120,15 +123,21 @@ export function AuthServiceControllerMethods() {
 export const AUTH_SERVICE_NAME = "AuthService";
 
 export interface UserServiceClient {
-  signUp(request: SingUpRequest): Observable<SingUpResponse>;
+  signUp(request: SingUpRequest, metadata?: Metadata): Observable<SingUpResponse>;
 
-  getUser(request: GetUserRequest): Observable<GetUserResponse>;
+  getUser(request: GetUserRequest, metadata?: Metadata): Observable<GetUserResponse>;
 }
 
 export interface UserServiceController {
-  signUp(request: SingUpRequest): Promise<SingUpResponse> | Observable<SingUpResponse> | SingUpResponse;
+  signUp(
+    request: SingUpRequest,
+    metadata?: Metadata,
+  ): Promise<SingUpResponse> | Observable<SingUpResponse> | SingUpResponse;
 
-  getUser(request: GetUserRequest): Promise<GetUserResponse> | Observable<GetUserResponse> | GetUserResponse;
+  getUser(
+    request: GetUserRequest,
+    metadata?: Metadata,
+  ): Promise<GetUserResponse> | Observable<GetUserResponse> | GetUserResponse;
 }
 
 export function UserServiceControllerMethods() {

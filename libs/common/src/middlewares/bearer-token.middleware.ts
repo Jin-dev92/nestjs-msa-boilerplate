@@ -37,7 +37,9 @@ export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
       if (!authorization) {
         throw new UnauthorizedException('토큰이 필요합니다.');
       }
-      const payload = await lastValueFrom(this.authService.parseBearerToken());
+      const payload = await lastValueFrom(
+        this.authService.parseBearerToken({ token: authorization }),
+      );
 
       if (
         [

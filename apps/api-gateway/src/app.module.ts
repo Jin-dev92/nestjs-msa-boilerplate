@@ -19,13 +19,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { EncryptionModule } from '@libs/encryption';
 import { join } from 'path';
 import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
-    EncryptionModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/api-gateway/.env',

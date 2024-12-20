@@ -10,10 +10,12 @@ import { ClientGrpc } from '@nestjs/microservices';
 @Injectable()
 export class AuthService implements OnModuleInit {
   authService: UserMicroService.AuthServiceClient;
+
   constructor(
     @Inject(MICROSERVICE_NAME.USER_SERVICE)
     private readonly userMicroservice: ClientGrpc,
   ) {}
+
   onModuleInit() {
     this.authService = this.userMicroservice.getService(
       MICROSERVICE_NAME.USER_SERVICE,
@@ -26,9 +28,8 @@ export class AuthService implements OnModuleInit {
         dto,
         new MetaDataBuilder()
           .setClientClass(AuthService.name)
-          .setClientMethod('requestLoginExecutes')
+          .setClientMethod('login')
           .build(),
-        // constructMetadataUtils(AuthService.name, 'requestLoginExecutes'),
       ),
     );
   }

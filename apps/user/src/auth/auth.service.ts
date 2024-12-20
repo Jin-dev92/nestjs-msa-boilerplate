@@ -104,16 +104,49 @@ export class AuthService {
 
   private async verifyTokenExecutes(
     token: string,
-    type: UserMicroService.TokenType = UserMicroService.TokenType.ACCESS,
+    type?: UserMicroService.TokenType,
   ) {
-    const secret =
-      type === UserMicroService.TokenType.ACCESS
-        ? ENVIRONMENT_KEYS.JWT_ACCESS_TOKEN_SECRET
-        : ENVIRONMENT_KEYS.JWT_REFRESH_TOKEN_SECRET;
+    if (type === UserMicroService.TokenType.UNRECOGNIZED) {
+      throw new UnauthorizedException('토큰이 손상되었습니다.');
+    }
     try {
-      return await this.jwtService.verifyAsync<IJwtPayload>(token, {
-        secret,
-      });
+      const secret =
+        type === UserMicroService.TokenType.ACCESS
+          ? this.configService.getOrThrow(
+              ENVIRONMENT_KEYS.JWT_ACCESS_TOKEN_SECRET,
+            )
+          : type === UserMicroService.TokenType.REFRESH
+            ? this.configService.getOrThrow(
+                ENVIRONMENT_KEYS.JWT_REFRESH_TOKEN_SECRET,
+              )
+            : null;
+
+      if (type) {
+        if (!secret) {
+          throw new UnauthorizedException('시크릿키가 존재하지 않습니다.');
+        }
+        const payload = await this.jwtService.verifyAsync<IJwtPayload>(token, {
+          secret,
+        });
+        return payload;
+      } else {
+        let payload = await this.jwtService.verifyAsync<IJwtPayload>(token, {
+          secret: this.configService.getOrThrow(
+            ENVIRONMENT_KEYS.JWT_ACCESS_TOKEN_SECRET,
+          ),
+        });
+        if (payload.type !== UserMicroService.TokenType.ACCESS) {
+          payload = await this.jwtService.verifyAsync<IJwtPayload>(token, {
+            secret: this.configService.getOrThrow(
+              ENVIRONMENT_KEYS.JWT_REFRESH_TOKEN_SECRET,
+            ),
+          });
+          if (payload.type !== UserMicroService.TokenType.REFRESH) {
+            throw new UnauthorizedException('토큰이 유효하지 않습니다.');
+          }
+        }
+        return payload;
+      }
     } catch (e) {
       this.logger.error(e);
       throw new UnauthorizedException('토큰이 유효하지 않습니다.');
