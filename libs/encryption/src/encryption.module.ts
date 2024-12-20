@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { EncryptionService } from './encryption.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { join } from 'path';
 import { Joi } from '@libs/common';
 
 @Module({
@@ -9,7 +10,8 @@ import { Joi } from '@libs/common';
     JwtModule,
     // UserModule,
     ConfigModule.forRoot({
-      envFilePath: './libs/encryption/.env',
+      isGlobal: true,
+      envFilePath: join(process.cwd(), 'libs/encryption/.env'),
       validationSchema: Joi.object({
         AUTH_ROUNDS: Joi.number().required(),
         JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),

@@ -27,6 +27,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{.Chart.Name }}-gateway-config-map
+            - secretRef:
+                name: {{.Chart.Name }}-gateway-secret
           livenessProbe:
             httpGet:
               port: 3000

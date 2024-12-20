@@ -4,4 +4,8 @@ metadata:
   name: {{.Chart.Name }}-chat-config-map
 data:
   CHAT_SERVICE_HOST: "{{ .Chart.Name }}-chat-cluster-ip:3001"
-  CHAT_SERVICE_TCP_PORT: "3002"
+  CHAT_SERVICE_TCP_PORT: "3001"
+  USER_SERVICE_HOST: "{{ .Chart.Name }}-user-cluster-ip:3001"
+  USER_SERVICE_TCP_PORT: "3001"
+  GRPC_USER_SERVICE_URL: "user:3001"
+  GRPC_CHAT_SERVICE_URL: "chat:3001"
