@@ -13,13 +13,19 @@ import { AuthModule } from './auth/auth.module';
       validationSchema: Joi.object({
         NODE_ENV: Joi.valid('development', 'production').required(),
         DATABASE_URL: Joi.string().required(),
+        GRPC_USER_SERVICE_URL: Joi.string().required(),
+
         KAKAO_CLIENT_ID: Joi.string().required(),
         KAKAO_CLIENT_SECRET: Joi.string().required(),
         KAKAO_REDIRECT_URI: Joi.string().required(),
+
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
-        GRPC_USER_SERVICE_URL: Joi.string().required(),
+
+        AUTH_ROUNDS: Joi.number().required(),
+        JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
+        JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({

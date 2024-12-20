@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { EncryptionService } from '@libs/encryption';
 import { ClientGrpc } from '@nestjs/microservices';
 import { MICROSERVICE_NAME, UserMicroService } from '@libs/common';
 import { lastValueFrom } from 'rxjs';
@@ -17,7 +16,6 @@ export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
   userService: UserMicroService.UserServiceClient;
 
   constructor(
-    private readonly encryptionService: EncryptionService,
     @Inject(MICROSERVICE_NAME.USER_SERVICE)
     private readonly userMicroService: ClientGrpc,
   ) {}
@@ -39,10 +37,14 @@ export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
       if (!authorization) {
         throw new UnauthorizedException('토큰이 필요합니다.');
       }
-      const payload =
-        await this.encryptionService.parseBearerToken(authorization);
+      const payload = await lastValueFrom(this.authService.parseBearerToken());
 
-      if (['access', 'refresh'].includes(payload.type)) {
+      if (
+        [
+          UserMicroService.TokenType.ACCESS,
+          UserMicroService.TokenType.REFRESH,
+        ].includes(payload.type)
+      ) {
         throw new UnauthorizedException('토큰의 타입이 올바르지 않습니다.');
       }
 

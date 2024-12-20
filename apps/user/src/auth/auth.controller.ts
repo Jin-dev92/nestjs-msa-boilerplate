@@ -1,15 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { EncryptionService } from '@libs/encryption';
 import { UserMicroService } from '@libs/common';
 
 @UserMicroService.AuthServiceControllerMethods()
 @Controller()
 export class AuthController implements UserMicroService.AuthServiceController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly encryptionService: EncryptionService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   /*@MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.LOGIN })*/
   async login(payload: UserMicroService.LoginRequest) {
@@ -17,7 +13,11 @@ export class AuthController implements UserMicroService.AuthServiceController {
     return tokens;
   }
 
-  parseBearerToken(request: UserMicroService.ParseBearerTokenRequest) {
-    return undefined;
+  async parseBearerToken(payload: UserMicroService.ParseBearerTokenRequest) {
+    return await this.authService.parseBearerToken(payload);
+  }
+
+  async hashPassword(payload: UserMicroService.HashPasswordRequest) {
+    return await this.authService.hashPasswordExecutes(payload);
   }
 }

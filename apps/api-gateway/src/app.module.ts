@@ -31,9 +31,9 @@ import { HealthModule } from './health/health.module';
       envFilePath: './apps/api-gateway/.env',
       validationSchema: Joi.object({
         HTTP_PORT: Joi.number().required(),
-        USER_SERVICE_HOST: Joi.string().required(),
+        GRPC_USER_SERVICE_URL: Joi.string().required(),
         USER_SERVICE_TCP_PORT: Joi.number().required(),
-        CHAT_SERVICE_HOST: Joi.string().required(),
+        GRPC_CHAT_SERVICE_URL: Joi.string().required(),
         CHAT_SERVICE_TCP_PORT: Joi.number().required(),
       }),
     }),

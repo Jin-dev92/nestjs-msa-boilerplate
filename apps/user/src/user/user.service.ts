@@ -6,15 +6,15 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
-import { EncryptionService } from '@libs/encryption';
 import { GetUsersDto } from './dto';
 import { UserMicroService } from '@libs/common';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly encryptionService: EncryptionService,
+    private authService: AuthService,
   ) {}
 
   async signUp(dto: UserMicroService.SingUpRequest) {
@@ -22,7 +22,7 @@ export class UserService {
       await this.checkExistByEmail(dto.email); // 중복 확인
       const user = this.userRepository.create({
         ...dto,
-        password: await this.encryptionService.hashPassword(dto.password),
+        password: await this.authService.hashPasswordExecutes(dto.password),
       });
       return await this.userRepository.save(user);
     } catch (e) {

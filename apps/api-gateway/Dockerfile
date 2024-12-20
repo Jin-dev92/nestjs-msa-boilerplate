@@ -27,8 +27,13 @@ WORKDIR /usr/src/app
 
 COPY package.json ./
 COPY yarn.lock ./
+COPY tsconfig.json ./
+COPY nest-cli.json ./
 
 RUN yarn install --production
+
+COPY apps/api-gateway apps/api-gateway
+COPY libs libs
 
 COPY --from=development /usr/src/app/dist ./dist
 COPY proto proto

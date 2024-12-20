@@ -4,7 +4,39 @@ package user;
 service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc ParseBearerToken(ParseBearerTokenRequest) returns (ParseBearerTokenResponse);
+  rpc HashPassword(HashPasswordRequest) returns (HashPasswordResponse);
+  //  rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 }
+
+/*  enum */
+enum TokenType {
+  ACCESS = 0;
+  REFRESH = 1;
+}
+enum UserRoleEnum {
+  USER = 0;
+  SUPER = 1;
+}
+/*  func definition */
+message HashPasswordRequest {
+  string password = 1;
+  optional string salt = 2;
+}
+message HashPasswordResponse {
+  string hash = 1;
+}
+
+//message VerifyTokenRequest {
+//  string token = 1;
+//  optional TokenType type = 2;
+//}
+//message VerifyTokenResponse {
+//  int32 sub = 1;
+//  string email = 2;
+//  UserRoleEnum role = 3;
+//  TokenType type = 4;
+//  int32 exp = 5;
+//}
 
 message LoginRequest {
   string email = 1;
@@ -17,12 +49,16 @@ message LoginResponse {
 }
 
 message ParseBearerTokenRequest {
-  string accessToken = 1;
-  string refreshToken = 2;
+  string token = 1;
+  optional TokenType type = 2;
 }
 
 message ParseBearerTokenResponse {
-  string sub = 1;
+  int32 sub = 1;
+  string email = 2;
+  UserRoleEnum role = 3;
+  TokenType type = 4;
+  int32 exp = 5;
 }
 
 service UserService {

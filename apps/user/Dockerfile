@@ -25,8 +25,14 @@ WORKDIR /usr/src/app
 
 COPY package.json ./
 COPY yarn.lock ./
+COPY tsconfig.json ./
+COPY nest-cli.json ./
 
 RUN yarn install --production
+
+# 서버 코드 빌드 및 실행 단계
+COPY apps/chat apps/chat
+COPY libs libs
 
 COPY --from=development /usr/src/app/dist ./dist
 COPY proto proto
