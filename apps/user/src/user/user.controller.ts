@@ -18,11 +18,6 @@ export class UserController implements UserMicroService.UserServiceController {
   @MessagePattern({
     cmd: MESSAGE_PATTERN_NAME.USER.SIGN_UP,
   })*/
-  async signUp(payload: UserMicroService.SingUpRequest) {
-    const user = await this.userService.signUp(payload);
-    return { id: user.id };
-  }
-
   async getUser(payload: UserMicroService.GetUserRequest) {
     const user = await this.userService.getUserById(payload);
     return {

@@ -8,11 +8,15 @@ import {
 } from '@libs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  /* globals */
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new GrpcInterceptor());
+
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {

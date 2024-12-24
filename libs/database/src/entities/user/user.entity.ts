@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { CommonEntity } from '@libs/database/entities';
 import { UserRoleEnum } from '@libs/database/enum';
-import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends CommonEntity {
