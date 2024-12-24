@@ -9,7 +9,7 @@ import { Metadata } from '@grpc/grpc-js';
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
-export const protobufPackage = 'user';
+export const protobufPackage = "user";
 
 /** enum */
 export enum TokenType {
@@ -32,6 +32,16 @@ export interface HashPasswordRequest {
 
 export interface HashPasswordResponse {
   hash: string;
+}
+
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  username: string;
+}
+
+export interface SignUpResponse {
+  id: number;
 }
 
 export interface LoginRequest {
@@ -67,107 +77,66 @@ export interface GetUserResponse {
   username: string;
 }
 
-export interface SingUpRequest {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface SingUpResponse {
-  id: number;
-}
-
-export const USER_PACKAGE_NAME = 'user';
+export const USER_PACKAGE_NAME = "user";
 
 export interface AuthServiceClient {
   login(request: LoginRequest, metadata?: Metadata): Observable<LoginResponse>;
 
-  parseBearerToken(
-    request: ParseBearerTokenRequest,
-    metadata?: Metadata,
-  ): Observable<ParseBearerTokenResponse>;
+  parseBearerToken(request: ParseBearerTokenRequest, metadata?: Metadata): Observable<ParseBearerTokenResponse>;
+
+  hashPassword(request: HashPasswordRequest, metadata?: Metadata): Observable<HashPasswordResponse>;
 
   /** rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse); */
 
-  hashPassword(
-    request: HashPasswordRequest,
-    metadata?: Metadata,
-  ): Observable<HashPasswordResponse>;
+  signUp(request: SignUpRequest, metadata?: Metadata): Observable<SignUpResponse>;
 }
 
 export interface AuthServiceController {
-  login(
-    request: LoginRequest,
-    metadata?: Metadata,
-  ): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+  login(request: LoginRequest, metadata?: Metadata): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
 
   parseBearerToken(
     request: ParseBearerTokenRequest,
     metadata?: Metadata,
-  ):
-    | Promise<ParseBearerTokenResponse>
-    | Observable<ParseBearerTokenResponse>
-    | ParseBearerTokenResponse;
-
-  /** rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse); */
+  ): Promise<ParseBearerTokenResponse> | Observable<ParseBearerTokenResponse> | ParseBearerTokenResponse;
 
   hashPassword(
     request: HashPasswordRequest,
     metadata?: Metadata,
-  ):
-    | Promise<HashPasswordResponse>
-    | Observable<HashPasswordResponse>
-    | HashPasswordResponse;
+  ): Promise<HashPasswordResponse> | Observable<HashPasswordResponse> | HashPasswordResponse;
+
+  /** rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse); */
+
+  signUp(
+    request: SignUpRequest,
+    metadata?: Metadata,
+  ): Promise<SignUpResponse> | Observable<SignUpResponse> | SignUpResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['login', 'parseBearerToken', 'hashPassword'];
+    const grpcMethods: string[] = ["login", "parseBearerToken", "hashPassword", "signUp"];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('AuthService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('AuthService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const AUTH_SERVICE_NAME = 'AuthService';
+export const AUTH_SERVICE_NAME = "AuthService";
 
 export interface UserServiceClient {
-  signUp(
-    request: SingUpRequest,
-    metadata?: Metadata,
-  ): Observable<SingUpResponse>;
+  /** rpc SignUp(SingUpRequest) returns (SingUpResponse); */
 
-  getUser(
-    request: GetUserRequest,
-    metadata?: Metadata,
-  ): Observable<GetUserResponse>;
+  getUser(request: GetUserRequest, metadata?: Metadata): Observable<GetUserResponse>;
 }
 
 export interface UserServiceController {
-  signUp(
-    request: SingUpRequest,
-    metadata?: Metadata,
-  ): Promise<SingUpResponse> | Observable<SingUpResponse> | SingUpResponse;
+  /** rpc SignUp(SingUpRequest) returns (SingUpResponse); */
 
   getUser(
     request: GetUserRequest,
@@ -177,31 +146,17 @@ export interface UserServiceController {
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['signUp', 'getUser'];
+    const grpcMethods: string[] = ["getUser"];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('UserService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("UserService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('UserService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("UserService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const USER_SERVICE_NAME = 'UserService';
+export const USER_SERVICE_NAME = "UserService";

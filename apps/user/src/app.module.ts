@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ENVIRONMENT_KEYS, Joi } from '@libs/common';
+import { Environment, ENVIRONMENT_KEYS, Joi } from '@libs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 
@@ -11,7 +11,10 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
       envFilePath: './apps/user/.env',
       validationSchema: Joi.object({
-        NODE_ENV: Joi.valid('development', 'production').required(),
+        NODE_ENV: Joi.valid(
+          Environment.DEVELOPMENT,
+          Environment.PRODUCTION,
+        ).required(),
         DATABASE_URL: Joi.string().required(),
         GRPC_USER_SERVICE_URL: Joi.string().required(),
 

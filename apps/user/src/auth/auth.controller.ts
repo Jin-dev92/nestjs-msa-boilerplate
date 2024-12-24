@@ -21,4 +21,8 @@ export class AuthController implements UserMicroService.AuthServiceController {
   async hashPassword(payload: UserMicroService.HashPasswordRequest) {
     return await this.authService.hashPasswordExecutes(payload);
   }
+
+  async signUp(request: UserMicroService.SignUpRequest, metadata?: Metadata) {
+    return await this.authService.signUpExecutes(request);
+  }
 }

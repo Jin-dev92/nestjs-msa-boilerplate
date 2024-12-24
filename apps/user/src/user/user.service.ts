@@ -6,32 +6,20 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
-import { GetUsersDto } from './dto';
+import { CreateUserDto, GetUsersDto } from './dto';
 import { UserMicroService } from '@libs/common';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    private authService: AuthService,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    // private authService: AuthService,
   ) {}
-
-  async signUp(dto: UserMicroService.SingUpRequest) {
-    const { password, email } = dto;
-    const response = await this.authService.hashPasswordExecutes({
-      password,
-    });
-    try {
-      await this.checkExistByEmail(email); // 중복 확인
-      const user = this.userRepository.create({
-        ...dto,
-        password: response.hash,
-      });
-      return await this.userRepository.save(user);
-    } catch (e) {
-      throw new BadRequestException(e);
-    }
+  async createUser(dto: CreateUserDto) {
+    await this.checkExistByEmail(dto.email);
+    const user = this.userRepository.create(dto);
+    return await this.userRepository.save(user);
   }
 
   async getUsers(dto: GetUsersDto) {

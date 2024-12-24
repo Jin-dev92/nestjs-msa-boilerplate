@@ -5,6 +5,7 @@ service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc ParseBearerToken(ParseBearerTokenRequest) returns (ParseBearerTokenResponse);
   rpc HashPassword(HashPasswordRequest) returns (HashPasswordResponse);
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
   //  rpc verifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 }
 
@@ -25,7 +26,15 @@ message HashPasswordRequest {
 message HashPasswordResponse {
   string hash = 1;
 }
+message SignUpRequest {
+  string email = 1;
+  string password = 2;
+  string username = 3;
+}
 
+message SignUpResponse {
+  int32 id = 1;
+}
 //message VerifyTokenRequest {
 //  string token = 1;
 //  optional TokenType type = 2;
@@ -62,7 +71,7 @@ message ParseBearerTokenResponse {
 }
 
 service UserService {
-  rpc SignUp(SingUpRequest) returns (SingUpResponse);
+//  rpc SignUp(SingUpRequest) returns (SingUpResponse);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
 }
 
@@ -74,14 +83,4 @@ message GetUserResponse {
   int32 id = 1;
   string email = 2;
   string username = 3;
-}
-
-message SingUpRequest {
-  string email = 1;
-  string password = 2;
-  string name = 3;
-}
-
-message SingUpResponse {
-  int32 id = 1;
 }

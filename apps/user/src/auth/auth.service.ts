@@ -22,6 +22,25 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async signUpExecutes(
+    dto: UserMicroService.SignUpRequest,
+  ): Promise<UserMicroService.SignUpResponse> {
+    const { password } = dto;
+    const response = await this.hashPasswordExecutes({
+      password,
+    });
+    try {
+      const user = await this.userService.createUser({
+        ...dto,
+        password: response.hash,
+      });
+      return { id: user.id };
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
+    }
+  }
+
   async loginExecutes(dto: UserMicroService.LoginRequest) {
     const { email } = dto;
     // 유저 조회
