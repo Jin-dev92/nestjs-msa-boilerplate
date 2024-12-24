@@ -1,14 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, GetUserDto, GetUsersDto } from './dto';
+import { GetUsersDto } from './dto';
 
 @Controller('users')
 export class UserController {
@@ -21,16 +13,10 @@ export class UserController {
 
   @Get('find/:id')
   async findOneById(@Param('id', ParseIntPipe) id: number) {
-    return await this.userService.getUserById(id);
+    return await this.userService.getUser({ id });
   }
-
-  @Get('find-one')
-  async findOne(@Query() dto: GetUserDto) {
-    return await this.userService.getUser(dto);
-  }
-  /*  Post Method */
-  @Post()
-  async signUp(@Body() dto: CreateUserDto) {
-    return await this.userService.signUp(dto);
+  @Get('check')
+  async checkUserByEmail(@Param('email') email: string) {
+    return await this.userService.checkUserByEmail(email);
   }
 }

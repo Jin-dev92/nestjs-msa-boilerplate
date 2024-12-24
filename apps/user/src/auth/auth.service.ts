@@ -8,7 +8,6 @@ import { UserService } from '../user/user.service';
 import { dayjs, ENVIRONMENT_KEYS, UserMicroService } from '@libs/common';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@libs/database';
 import { JwtService } from '@nestjs/jwt';
 import { IJwtPayload } from './interfaces';
 
@@ -30,7 +29,7 @@ export class AuthService {
       password,
     });
     try {
-      const user = await this.userService.createUser({
+      const user = await this.userService.createUserExecutes({
         ...dto,
         password: response.hash,
       });
@@ -44,7 +43,7 @@ export class AuthService {
   async loginExecutes(dto: UserMicroService.LoginRequest) {
     const { email } = dto;
     // 유저 조회
-    const user = await this.userService.checkUserByEmail(email);
+    const { user } = await this.userService.checkUserByEmailExecutes({ email });
     // 로그인 히스토리 남기기
     return {
       accessToken: await this.issueToken(
@@ -59,11 +58,11 @@ export class AuthService {
   }
 
   async authenticateToLocalExecutes(email: string, password: string) {
-    const user = await this.userService.checkUserByEmail(email);
-    if (!(await this.comparePassword(password, user.password))) {
+    const response = await this.userService.checkUserByEmailExecutes({ email });
+    if (!(await this.comparePassword(password, response.user.password))) {
       throw new UnauthorizedException('비밀번호가 올바르지 않습니다.');
     }
-    return user;
+    return response.user;
   }
 
   // async authenticateToKakao(email: string, password: string) {}
@@ -173,7 +172,7 @@ export class AuthService {
   }
 
   private async issueToken(
-    user: Pick<User, 'id' | 'role' | 'email'>,
+    user: Pick<UserMicroService.User, 'id' | 'email' | 'role'>,
     type: UserMicroService.TokenType = UserMicroService.TokenType.ACCESS,
   ) {
     const secret =
@@ -185,8 +184,8 @@ export class AuthService {
     const payload: IJwtPayload = {
       sub: id,
       email,
-      role,
       type,
+      role,
       exp:
         type === UserMicroService.TokenType.ACCESS
           ? dayjs().add(1, 'hour').unix()

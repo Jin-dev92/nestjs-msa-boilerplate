@@ -18,12 +18,21 @@ export class UserController implements UserMicroService.UserServiceController {
   @MessagePattern({
     cmd: MESSAGE_PATTERN_NAME.USER.SIGN_UP,
   })*/
-  async getUser(payload: UserMicroService.GetUserRequest) {
-    const user = await this.userService.getUserById(payload);
-    return {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-    };
+  async getUser(
+    payload: UserMicroService.GetUserRequest,
+  ): Promise<UserMicroService.GetUserResponse> {
+    return await this.userService.getUserByIdExecutes(payload);
+  }
+
+  async getUsers(
+    payload: UserMicroService.GetUsersRequest,
+  ): Promise<UserMicroService.GetUsersResponse> {
+    return await this.userService.getUsersExecutes(payload);
+  }
+
+  async checkUserByEmail(
+    payload: UserMicroService.CheckUserByEmailRequest,
+  ): Promise<UserMicroService.CheckUserByEmailResponse> {
+    return await this.userService.checkUserByEmailExecutes(payload);
   }
 }

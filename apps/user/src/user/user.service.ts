@@ -6,8 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/database';
 import { Repository } from 'typeorm';
-import { CreateUserDto, GetUsersDto } from './dto';
+import { CreateUserDto } from './dto';
 import { UserMicroService } from '@libs/common';
+import { GetUsersRequest } from '@libs/common/grpc/proto/user';
 
 @Injectable()
 export class UserService {
@@ -16,18 +17,23 @@ export class UserService {
     private userRepository: Repository<User>,
     // private authService: AuthService,
   ) {}
-  async createUser(dto: CreateUserDto) {
+  async createUserExecutes(dto: CreateUserDto) {
     await this.checkExistByEmail(dto.email);
     const user = this.userRepository.create(dto);
     return await this.userRepository.save(user);
   }
 
-  async getUsers(dto: GetUsersDto) {
+  async getUsersExecutes(
+    dto: GetUsersRequest,
+  ): Promise<UserMicroService.GetUsersResponse> {
     const { skip, take } = dto;
-    return await this.userRepository.find({ ...dto, skip, take });
+    const users = await this.userRepository.find({ ...dto, skip, take });
+    return { users };
   }
 
-  async getUserById(dto: UserMicroService.GetUserRequest) {
+  async getUserByIdExecutes(
+    dto: UserMicroService.GetUserRequest,
+  ): Promise<UserMicroService.GetUserResponse> {
     const user = await this.userRepository.findOne({
       where: {
         id: dto.id,
@@ -36,17 +42,20 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('존재하지 않는 유저입니다.');
     }
-    return user;
+    return { user };
   }
 
-  async checkUserByEmail(email: string) {
+  async checkUserByEmailExecutes(
+    payload: UserMicroService.CheckUserByEmailRequest,
+  ): Promise<UserMicroService.CheckUserByEmailResponse> {
+    const { email } = payload;
     const user = await this.userRepository.findOneBy({
       email,
     });
     if (!user) {
       throw new NotFoundException('존재하지 않는 유저입니다.');
     }
-    return user;
+    return { user };
   }
 
   /*  private function */

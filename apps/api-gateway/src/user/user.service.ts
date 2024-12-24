@@ -1,63 +1,42 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto, GetUserDto, GetUsersDto } from './dto';
-import { ClientProxy } from '@nestjs/microservices';
-import { MESSAGE_PATTERN_NAME, MICROSERVICE_NAME } from '@libs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { UserMicroService } from '@libs/common';
 import { lastValueFrom } from 'rxjs';
-import { User } from '@libs/database';
+import { GetUserDto, GetUsersDto } from './dto';
 
 @Injectable()
 export class UserService {
+  private readonly userService: UserMicroService.UserServiceClient;
   constructor(
-    @Inject(MICROSERVICE_NAME.USER_SERVICE)
-    private readonly userMicroService: ClientProxy,
-  ) {}
-
-  async signUp(dto: CreateUserDto) {
-    try {
-      return await lastValueFrom(
-        this.userMicroService.send<User, CreateUserDto>(
-          { cmd: MESSAGE_PATTERN_NAME.USER.SIGN_UP },
-          dto,
-        ),
+    @Inject(UserMicroService.USER_SERVICE_NAME)
+    private readonly userMicroService: ClientGrpc,
+  ) {
+    this.userService =
+      this.userMicroService.getService<UserMicroService.UserServiceClient>(
+        UserMicroService.USER_SERVICE_NAME,
       );
-    } catch (e) {
-      throw new BadRequestException(e);
-    }
   }
 
   async getUsers(dto: GetUsersDto) {
     try {
-      return await lastValueFrom(
-        this.userMicroService.send<User[], GetUsersDto>(
-          { cmd: MESSAGE_PATTERN_NAME.USER.GET_USERS },
-          dto,
-        ),
-      );
+      return await lastValueFrom(this.userService.getUsers(dto));
     } catch (e) {
       throw new BadRequestException(e);
     }
   }
 
   async getUser(dto: GetUserDto) {
+    const { id } = dto;
     try {
-      return await lastValueFrom(
-        this.userMicroService.send<User, GetUserDto>(
-          { cmd: MESSAGE_PATTERN_NAME.USER.GET_USER },
-          dto,
-        ),
-      );
+      return await lastValueFrom(this.userService.getUser({ id }));
     } catch (e) {
       throw new BadRequestException(e);
     }
   }
-  async getUserById(id: number) {
+
+  async checkUserByEmail(email: string) {
     try {
-      return await lastValueFrom(
-        this.userMicroService.send<User, Pick<GetUserDto, 'id'>>(
-          { cmd: MESSAGE_PATTERN_NAME.USER.GET_USER },
-          { id },
-        ),
-      );
+      return await lastValueFrom(this.userService.checkUserByEmail({ email }));
     } catch (e) {
       throw new BadRequestException(e);
     }

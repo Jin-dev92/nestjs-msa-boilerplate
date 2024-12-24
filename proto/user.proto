@@ -18,6 +18,16 @@ enum UserRoleEnum {
   USER = 0;
   SUPER = 1;
 }
+
+message User {
+  int32 id = 1;
+  string email = 2;
+  string username = 3;
+  string password = 4;
+  UserRoleEnum role = 5;
+}
+
+
 /*  func definition */
 message HashPasswordRequest {
   string password = 1;
@@ -71,8 +81,10 @@ message ParseBearerTokenResponse {
 }
 
 service UserService {
-//  rpc SignUp(SingUpRequest) returns (SingUpResponse);
+  //  rpc SignUp(SingUpRequest) returns (SingUpResponse);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+  rpc CheckUserByEmail(CheckUserByEmailRequest) returns (CheckUserByEmailResponse);
 }
 
 message GetUserRequest {
@@ -80,7 +92,21 @@ message GetUserRequest {
 }
 
 message GetUserResponse {
-  int32 id = 1;
-  string email = 2;
-  string username = 3;
+  User user = 1;
+}
+
+message GetUsersRequest {
+  optional int32 skip = 1;
+  optional int32 take = 2;
+}
+
+message GetUsersResponse {
+  repeated User users = 1;
+}
+message CheckUserByEmailRequest {
+  string email = 1;
+}
+
+message CheckUserByEmailResponse {
+  User user = 1;
 }

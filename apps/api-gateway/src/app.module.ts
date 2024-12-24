@@ -39,7 +39,7 @@ import { HealthModule } from './health/health.module';
       isGlobal: true,
       clients: [
         {
-          name: UserMicroService.USER_PACKAGE_NAME,
+          name: UserMicroService.USER_SERVICE_NAME,
           inject: [ConfigService],
           useFactory: (configService: ConfigService) => ({
             transport: Transport.GRPC,

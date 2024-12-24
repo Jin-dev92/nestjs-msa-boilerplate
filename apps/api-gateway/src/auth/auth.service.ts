@@ -8,13 +8,13 @@ export class AuthService implements OnModuleInit {
   authService: UserMicroService.AuthServiceClient;
 
   constructor(
-    @Inject(UserMicroService.USER_PACKAGE_NAME)
+    @Inject(UserMicroService.USER_SERVICE_NAME)
     private readonly userMicroservice: ClientGrpc,
   ) {}
 
   onModuleInit() {
     this.authService = this.userMicroservice.getService(
-      UserMicroService.USER_PACKAGE_NAME,
+      UserMicroService.USER_SERVICE_NAME,
     );
   }
 
@@ -25,6 +25,17 @@ export class AuthService implements OnModuleInit {
         new MetaDataBuilder()
           .setClientClass(AuthService.name)
           .setClientMethod('login')
+          .build(),
+      ),
+    );
+  }
+  async requestSignUpExecutes(dto: UserMicroService.SignUpRequest) {
+    return await lastValueFrom(
+      this.authService.signUp(
+        dto,
+        new MetaDataBuilder()
+          .setClientClass(AuthService.name)
+          .setClientMethod('signUp')
           .build(),
       ),
     );
