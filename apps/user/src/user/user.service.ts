@@ -18,11 +18,15 @@ export class UserService {
   ) {}
 
   async signUp(dto: UserMicroService.SingUpRequest) {
+    const { password, email } = dto;
+    const response = await this.authService.hashPasswordExecutes({
+      password,
+    });
     try {
-      await this.checkExistByEmail(dto.email); // 중복 확인
+      await this.checkExistByEmail(email); // 중복 확인
       const user = this.userRepository.create({
         ...dto,
-        password: await this.authService.hashPasswordExecutes(dto.password),
+        password: response.hash,
       });
       return await this.userRepository.save(user);
     } catch (e) {

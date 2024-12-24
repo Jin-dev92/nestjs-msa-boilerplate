@@ -7,8 +7,8 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
   BearerTokenMiddleware,
+  ENVIRONMENT_KEYS,
   Joi,
-  MICROSERVICE_NAME,
   traceInterceptor,
   UserMicroService,
 } from '@libs/common';
@@ -39,42 +39,22 @@ import { HealthModule } from './health/health.module';
       isGlobal: true,
       clients: [
         {
-          name: MICROSERVICE_NAME.USER_SERVICE,
+          name: UserMicroService.USER_PACKAGE_NAME,
           inject: [ConfigService],
-          useFactory: (configService: ConfigService) => {
-            const options = {
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.GRPC,
+            options: {
               channelOptions: {
                 interceptors: [traceInterceptor('gateway')],
               },
               package: UserMicroService.protobufPackage,
               protoPath: join(process.cwd(), 'proto/user.proto'),
-            };
-            return {
-              transport: Transport.GRPC,
-              options: {
-                channelOptions: {
-                  interceptors: [traceInterceptor('gateway')],
-                },
-                package: UserMicroService.protobufPackage,
-                protoPath: join(process.cwd(), 'proto/user.proto'),
-              },
-            };
-          },
+              url: configService.getOrThrow(
+                ENVIRONMENT_KEYS.GRPC_USER_SERVICE_URL,
+              ),
+            },
+          }),
         },
-        // {
-        //   name: MICROSERVICE_NAME.CHAT_SERVICE,
-        //   inject: [ConfigService],
-        //   useFactory: (configService: ConfigService) => ({
-        //     transport: Transport.GRPC,
-        //     options: {
-        //       channelOptions: {
-        //         interceptors: [traceInterceptor('gateway')],
-        //       },
-        //       package: UserMicroService.protobufPackage,
-        //       protoPath: join(process.cwd(), 'proto/user.proto'),
-        //     },
-        //   }),
-        // },
       ],
     }),
     ChatModule,

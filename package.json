@@ -18,6 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api-gateway/test/jest-e2e.json",
+    "test:gateway": "jest --testPathPattern=/apps/api-gateway --coverage",
+    "test:user": "jest --testPathPattern=/apps/user --coverage",
+    "test:chat": "jest --testPathPattern=/apps/chat --coverage",
     "migration-run": "typeorm migration:run",
     "migration-revert": "typeorm migration:revert"
   },
@@ -106,6 +109,18 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/",
+      "/dist/",
+      "modules.ts",
+      "dto.ts",
+      "entity.ts",
+      "index.ts",
+      "utils.ts",
+      ".proto",
+      "enum.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",

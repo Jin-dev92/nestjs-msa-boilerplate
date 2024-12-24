@@ -1,9 +1,5 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import {
-  MetaDataBuilder,
-  MICROSERVICE_NAME,
-  UserMicroService,
-} from '@libs/common';
+import { MetaDataBuilder, UserMicroService } from '@libs/common';
 import { lastValueFrom } from 'rxjs';
 import { ClientGrpc } from '@nestjs/microservices';
 
@@ -12,13 +8,13 @@ export class AuthService implements OnModuleInit {
   authService: UserMicroService.AuthServiceClient;
 
   constructor(
-    @Inject(MICROSERVICE_NAME.USER_SERVICE)
+    @Inject(UserMicroService.USER_PACKAGE_NAME)
     private readonly userMicroservice: ClientGrpc,
   ) {}
 
   onModuleInit() {
     this.authService = this.userMicroservice.getService(
-      MICROSERVICE_NAME.USER_SERVICE,
+      UserMicroService.USER_PACKAGE_NAME,
     );
   }
 
