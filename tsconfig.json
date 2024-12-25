@@ -35,6 +35,12 @@
       ],
       "@libs/common/*": [
         "libs/common/src/*"
+      ],
+      "@libs/upload": [
+        "libs/upload/src"
+      ],
+      "@libs/upload/*": [
+        "libs/upload/src/*"
       ]
     }
   }

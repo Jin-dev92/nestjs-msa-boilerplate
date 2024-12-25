@@ -1,0 +1,40 @@
+syntax = "proto3";
+package chat;
+
+service ChatService {
+
+}
+enum AttachmentType {
+  IMAGE = 0;
+  VIDEO = 1;
+  AUDIO = 2;
+  FILE = 3;
+  ETC = 4;
+}
+
+enum MessageType {
+  TEXT = 0;
+  UPLOAD = 1;
+}
+
+message Attachment {
+  string url = 1;
+  AttachmentType type = 2;
+  int32 size = 3;
+  string name = 4;
+  string mimeType = 5;
+  string createdAt = 6;
+  string updateAt = 7;
+}
+
+
+message Chat {
+  int32 id = 1;
+  string message = 2;
+  string senderId = 3;
+  string roomId = 4;
+  repeated Attachment attachments = 5;
+  MessageType type = 6;
+  string createdAt = 7;
+  string deleteAt = 8;
+}

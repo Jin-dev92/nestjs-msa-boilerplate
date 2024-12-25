@@ -44,6 +44,9 @@ import { join } from 'path';
                 channelOptions: {
                   interceptors: [traceInterceptor('chat')],
                 },
+                url: configService.get<string>(
+                  ENVIRONMENT_KEYS.GRPC_USER_SERVICE_URL,
+                ),
                 package: UserMicroService.protobufPackage,
                 protoPath: join(process.cwd(), 'proto/user.proto'),
               },

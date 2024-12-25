@@ -9,6 +9,7 @@ export class ChatService {
   registerClient(userId: number, client: Socket) {
     this.activatedChatClients.set(userId, client);
   }
+
   disconnectClient(userId: number) {
     try {
       this.activatedChatClients.get(userId).disconnect();
