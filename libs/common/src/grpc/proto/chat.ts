@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 
-export const protobufPackage = "chat";
+export const protobufPackage = 'chat';
 
 export enum AttachmentType {
   IMAGE = 0,
@@ -40,27 +40,39 @@ export interface Chat {
   deleteAt: string;
 }
 
-export const CHAT_PACKAGE_NAME = "chat";
+export const CHAT_PACKAGE_NAME = 'chat';
 
-export interface ChatServiceClient {
-}
+export interface ChatServiceClient {}
 
-export interface ChatServiceController {
-}
+export interface ChatServiceController {}
 
 export function ChatServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("ChatService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('ChatService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("ChatService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('ChatService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const CHAT_SERVICE_NAME = "ChatService";
+export const CHAT_SERVICE_NAME = 'ChatService';

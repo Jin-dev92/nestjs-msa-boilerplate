@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { UploadMicroService } from '@libs/common';
 import { UploadModule } from './upload.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -8,7 +9,7 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
-      package: 'upload',
+      package: UploadMicroService.UPLOAD_PACKAGE_NAME,
       protoPath: join(process.cwd(), 'proto/upload.proto'),
     },
   });

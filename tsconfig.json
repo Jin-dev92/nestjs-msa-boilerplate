@@ -41,6 +41,12 @@
       ],
       "@libs/upload/*": [
         "libs/upload/src/*"
+      ],
+      "@libs/aws": [
+        "libs/aws/src"
+      ],
+      "@libs/aws/*": [
+        "libs/aws/src/*"
       ]
     }
   }
