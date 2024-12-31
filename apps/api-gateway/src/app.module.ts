@@ -7,6 +7,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
   BearerTokenMiddleware,
+  ChatMicroService,
   ENVIRONMENT_KEYS,
   Joi,
   traceInterceptor,
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { join } from 'path';
 import { HealthModule } from './health/health.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -55,12 +57,30 @@ import { HealthModule } from './health/health.module';
             },
           }),
         },
+        {
+          name: ChatMicroService.CHAT_SERVICE_NAME,
+          inject: [ConfigService],
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.GRPC,
+            options: {
+              channelOptions: {
+                interceptors: [traceInterceptor('gateway')],
+              },
+              package: ChatMicroService.protobufPackage,
+              protoPath: join(process.cwd(), 'proto/chat.proto'),
+              url: configService.getOrThrow(
+                ENVIRONMENT_KEYS.GRPC_CHAT_SERVICE_URL,
+              ),
+            },
+          }),
+        },
       ],
     }),
     ChatModule,
     AuthModule,
     UserModule,
     HealthModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [],

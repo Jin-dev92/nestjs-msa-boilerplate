@@ -2,14 +2,27 @@ syntax = "proto3";
 package upload;
 
 service UploadService {
-  rpc UploadFiles (UploadRequest) returns (UploadResponse) {}
+  rpc UploadFiles (UploadFileRequest) returns (UploadFileResponse) {}
 }
 
-message UploadRequest {
-  string filename = 1;
-  bytes content = 2;
+enum FileType {
+  IMAGE = 0;
+  VIDEO = 1;
+  AUDIO = 2;
+  FILE = 3;
+  ETC = 4;
 }
 
-message UploadResponse {
-  string filePath = 1;
+message File {
+  bytes file = 1;           // 업로드할 파일 데이터
+  string filename = 2;      // 파일 이름
+  string mimetype = 3;      // MIME 타입
+}
+
+message UploadFileRequest {
+  repeated File files = 1;
+}
+
+message UploadFileResponse {
+  repeated string filePath = 1;
 }

@@ -11,26 +11,39 @@ import { Observable } from 'rxjs';
 
 export const protobufPackage = "upload";
 
-export interface UploadRequest {
-  filename: string;
-  content: Uint8Array;
+export enum FileType {
+  IMAGE = 0,
+  VIDEO = 1,
+  AUDIO = 2,
+  FILE = 3,
+  ETC = 4,
+  UNRECOGNIZED = -1,
 }
 
-export interface UploadResponse {
+export interface File {
+  file: Uint8Array;
+  fileType: FileType;
+}
+
+export interface UploadFileRequest {
+  files: File[];
+}
+
+export interface UploadFileResponse {
   filePath: string;
 }
 
 export const UPLOAD_PACKAGE_NAME = "upload";
 
 export interface UploadServiceClient {
-  uploadFiles(request: UploadRequest, metadata?: Metadata): Observable<UploadResponse>;
+  uploadFiles(request: UploadFileRequest, metadata?: Metadata): Observable<UploadFileResponse>;
 }
 
 export interface UploadServiceController {
   uploadFiles(
-    request: UploadRequest,
+    request: UploadFileRequest,
     metadata?: Metadata,
-  ): Promise<UploadResponse> | Observable<UploadResponse> | UploadResponse;
+  ): Promise<UploadFileResponse> | Observable<UploadFileResponse> | UploadFileResponse;
 }
 
 export function UploadServiceControllerMethods() {
