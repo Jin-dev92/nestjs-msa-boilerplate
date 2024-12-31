@@ -22,7 +22,6 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { join } from 'path';
 import { HealthModule } from './health/health.module';
-import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -80,7 +79,6 @@ import { UploadModule } from './upload/upload.module';
     AuthModule,
     UserModule,
     HealthModule,
-    UploadModule,
   ],
   controllers: [],
   providers: [],
