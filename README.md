@@ -1,7 +1,18 @@
 ## 프로젝트 설명
-
-nestjs 기반의 microservice architecture 를 구현하기 위한 보일러플레이트 입니다.
-
+써보고 싶은 기술을 사용해보기 위한 프로젝트입니다.
+- 아키텍처 구성: MSA + Clean Architecture
+- 프로토콜: gRPC + REST API
+- 인증/인가: JWT
+- 컨테이너: Docker
+- 오케스트레이션: Kubernetes
+- 데이터베이스: PostgreSQL + MongoDB
+- 테스트: Jest(현재 부분적으로 적용 되어있습니다. 조만간 커버리지를 높일 예정입니다.)
+- 로깅: Winston (예정)
+- 모니터링: Prometheus + Grafana (예정)
+- CI/CD: Github Actions (예정)
+- 클라우드: AWS Fargate (예정)
+- 패턴: Saga Pattern (예정)
+- 
 ## 구성
 - apps
   - gateway - 마이크로 서비스를 통합하기 위한 API Gateway, HTTP 포트 번호는 3000
