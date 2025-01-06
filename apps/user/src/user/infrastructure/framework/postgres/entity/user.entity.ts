@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { CommonEntity } from '@libs/database/entities';
-import { UserRoleEnum } from '@libs/database/enum';
+import { UserRoleEnum } from '@libs/common/grpc/proto/user';
 
 @Entity()
-export class User extends CommonEntity {
+export class UserEntity extends CommonEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

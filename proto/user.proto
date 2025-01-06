@@ -84,11 +84,13 @@ service UserService {
   //  rpc SignUp(SingUpRequest) returns (SingUpResponse);
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
   rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
   rpc CheckUserByEmail(CheckUserByEmailRequest) returns (CheckUserByEmailResponse);
 }
 
 message GetUserRequest {
   int32 id = 1;
+  optional UserRoleEnum role = 2;
 }
 
 message GetUserResponse {
@@ -102,11 +104,23 @@ message GetUsersRequest {
 
 message GetUsersResponse {
   repeated User users = 1;
+  int32 total = 2;
 }
+
 message CheckUserByEmailRequest {
   string email = 1;
 }
 
 message CheckUserByEmailResponse {
+  User user = 1;
+}
+
+message CreateUserRequest{
+  string email = 1;
+  string password = 2;
+  string username = 3;
+  optional UserRoleEnum role = 4;
+}
+message CreateUserResponse{
   User user = 1;
 }

@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { UserRoleEnum } from '@libs/database';
+import { UserRoleEnum } from '@libs/common/grpc/proto/user';
 
 export class GetUserDto {
   @Type(() => Number)

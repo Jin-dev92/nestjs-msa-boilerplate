@@ -23,3 +23,4 @@ export class ApiGatewayController {
     return this.chatMicroService.send(pattern, req.body);
   }
 }
+/* deprecated */

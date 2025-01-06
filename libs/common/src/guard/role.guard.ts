@@ -4,34 +4,34 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  OnModuleInit,
 } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
-import {
-  MESSAGE_PATTERN_NAME,
-  MICROSERVICE_NAME,
-  Public,
-  SuperUser,
-} from '@libs/common';
+import { Public, SuperUser, UserMicroService } from '@libs/common';
 import { Reflector } from '@nestjs/core';
-import { ClientProxy } from '@nestjs/microservices';
-import { User, UserRoleEnum } from '@libs/database';
-import { GetUserDto } from '../../../../apps/user/src/user';
+import { ClientGrpc } from '@nestjs/microservices';
 
 @Injectable()
-export class RoleGuard implements CanActivate {
+export class RoleGuard implements CanActivate, OnModuleInit {
+  userService: UserMicroService.UserServiceClient;
   constructor(
     private readonly reflector: Reflector,
-    @Inject(MICROSERVICE_NAME.USER_SERVICE)
-    private readonly userService: ClientProxy,
+    @Inject(UserMicroService.USER_SERVICE_NAME)
+    private readonly userMicroService: ClientGrpc,
   ) {}
+
+  onModuleInit() {
+    this.userService =
+      this.userMicroService.getService<UserMicroService.UserServiceClient>(
+        UserMicroService.USER_SERVICE_NAME,
+      );
+  }
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.get(Public, context.getClass());
     const isSuperUser =
-      this.reflector.get(SuperUser, context.getClass()) === UserRoleEnum.SUPER;
-    console.log(
-      'this.reflector.get(SuperUser, context.getClass()): ',
-      this.reflector.get(SuperUser, context.getClass()),
-    );
+      this.reflector.get(SuperUser, context.getClass()) ===
+      UserMicroService.UserRoleEnum.SUPER;
     if (isPublic) {
       return true;
     }
@@ -41,14 +41,13 @@ export class RoleGuard implements CanActivate {
       throw new BadRequestException('로그인이 필요합니다.');
     }
 
-    const user = await lastValueFrom(
-      this.userService.send<User, GetUserDto>(
-        MESSAGE_PATTERN_NAME.USER.GET_USER,
-        {
-          id: request.user.id,
-          role: isSuperUser ? UserRoleEnum.SUPER : UserRoleEnum.USER,
-        },
-      ),
+    const { user } = await lastValueFrom(
+      this.userService.getUser({
+        id: request.user.id,
+        role: isSuperUser
+          ? UserMicroService.UserRoleEnum.SUPER
+          : UserMicroService.UserRoleEnum.USER,
+      }),
     );
     if (!user) {
       throw new BadRequestException('올바른 접근이 아닙니다.');
