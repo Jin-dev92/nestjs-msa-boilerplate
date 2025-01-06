@@ -5,6 +5,15 @@ import { lastValueFrom } from 'rxjs';
 import { IGetUsersResponse, UserOutputPort } from '../../../port';
 import { GetUserDto, GetUsersDto } from '../../../usecase';
 import { UserDomain } from '../../../domain';
+import {
+  CheckUserByEmailGrpcResponseMapper,
+  CreateUserGrpcRequestMapper,
+  CreateUserGrpcResponseMapper,
+  GetUserGrpcRequestMapper,
+  GetUserGrpcResponseMapper,
+  GetUsersGrpcRequestMapper,
+  GetUsersGrpcResponseMapper,
+} from './mapper';
 
 export class UserGrpc implements UserOutputPort, OnModuleInit {
   private userService: UserMicroService.UserServiceClient;
@@ -22,29 +31,32 @@ export class UserGrpc implements UserOutputPort, OnModuleInit {
   }
 
   async createUser(user: UserDomain) {
-    const response = await lastValueFrom();
-    return undefined;
+    const response = await lastValueFrom(
+      this.userService.createUser(
+        new CreateUserGrpcRequestMapper(user).toGrpc(),
+      ),
+    );
+    return new CreateUserGrpcResponseMapper(response).toDomain();
   }
 
   async checkUserByEmail(email: string) {
     const response = await lastValueFrom(
       this.userService.checkUserByEmail({ email }),
     );
-    const { user } = response;
-    return undefined;
+    return new CheckUserByEmailGrpcResponseMapper(response).toDomain();
   }
 
   async getUser(dto: GetUserDto): Promise<UserDomain> {
-    const response = await lastValueFrom();
-    return undefined;
+    const response = await lastValueFrom(
+      this.userService.getUser(new GetUserGrpcRequestMapper(dto).toGrpc()),
+    );
+    return new GetUserGrpcResponseMapper(response).toDomain();
   }
 
   async getUsers(dto: GetUsersDto): Promise<IGetUsersResponse> {
-    const response = await lastValueFrom(this.userService.getUsers(dto));
-    const { users, total } = response;
-    return {
-      users: users.map((user) => new UserDomain(user)),
-      total,
-    };
+    const response = await lastValueFrom(
+      this.userService.getUsers(new GetUsersGrpcRequestMapper(dto).toGrpc()),
+    );
+    return new GetUsersGrpcResponseMapper(response).toDomain();
   }
 }

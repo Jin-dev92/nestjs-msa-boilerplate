@@ -100,6 +100,9 @@ message GetUserResponse {
 message GetUsersRequest {
   optional int32 skip = 1;
   optional int32 take = 2;
+  optional string email = 3;
+  optional string username = 4;
+  optional UserRoleEnum role = 5;
 }
 
 message GetUsersResponse {

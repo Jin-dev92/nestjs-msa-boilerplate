@@ -87,6 +87,9 @@ export interface GetUserResponse {
 export interface GetUsersRequest {
   skip?: number | undefined;
   take?: number | undefined;
+  email?: string | undefined;
+  username?: string | undefined;
+  role?: UserRoleEnum | undefined;
 }
 
 export interface GetUsersResponse {
