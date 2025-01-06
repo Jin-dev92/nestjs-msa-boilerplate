@@ -1,25 +1,18 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { UserMicroService } from '@libs/common';
-import { lastValueFrom } from 'rxjs';
-import { GetUserDto, GetUsersDto } from './dto';
+import { GRPC_NAME } from '@libs/common';
+import { CreateUserDto, GetUserDto, GetUsersDto } from './dto';
+import { UserGrpc } from '../../../user/src/user';
 
 @Injectable()
 export class UserService {
-  private readonly userService: UserMicroService.UserServiceClient;
   constructor(
-    @Inject(UserMicroService.USER_SERVICE_NAME)
-    private readonly userMicroService: ClientGrpc,
-  ) {
-    this.userService =
-      this.userMicroService.getService<UserMicroService.UserServiceClient>(
-        UserMicroService.USER_SERVICE_NAME,
-      );
-  }
+    @Inject(GRPC_NAME.USER_GRPC)
+    private readonly userGrpc: UserGrpc,
+  ) {}
 
   async getUsers(dto: GetUsersDto) {
     try {
-      return await lastValueFrom(this.userService.getUsers(dto));
+      return await this.userGrpc.getUsers(dto);
     } catch (e) {
       throw new BadRequestException(e);
     }
@@ -28,7 +21,7 @@ export class UserService {
   async getUser(dto: GetUserDto) {
     const { id } = dto;
     try {
-      return await lastValueFrom(this.userService.getUser({ id }));
+      return await this.userGrpc.getUser({ id });
     } catch (e) {
       throw new BadRequestException(e);
     }
@@ -36,7 +29,15 @@ export class UserService {
 
   async checkUserByEmail(email: string) {
     try {
-      return await lastValueFrom(this.userService.checkUserByEmail({ email }));
+      return await this.userGrpc.checkUserByEmail(email);
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
+  }
+
+  async createUser(dto: CreateUserDto) {
+    try {
+      return await this.userGrpc.createUser(dto);
     } catch (e) {
       throw new BadRequestException(e);
     }

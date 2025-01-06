@@ -15,3 +15,9 @@ export const MESSAGE_PATTERN_NAME = {
 export const EVENT_PATTERN_NAME = {
   USER: {},
 };
+
+export const GRPC_NAME = {
+  USER_GRPC: 'USER_GRPC',
+  AUTH_GRPC: 'AUTH_GRPC',
+  CHAT_GRPC: 'CHAT_GRPC',
+};

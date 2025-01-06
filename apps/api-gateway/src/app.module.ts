@@ -9,6 +9,7 @@ import {
   BearerTokenMiddleware,
   ChatMicroService,
   ENVIRONMENT_KEYS,
+  GRPC_NAME,
   Joi,
   traceInterceptor,
   UserMicroService,
@@ -22,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { join } from 'path';
 import { HealthModule } from './health/health.module';
+import { UserGrpc } from '../../user/src/user';
 
 @Module({
   imports: [
@@ -81,7 +83,12 @@ import { HealthModule } from './health/health.module';
     HealthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: GRPC_NAME.USER_GRPC,
+      useClass: UserGrpc,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
