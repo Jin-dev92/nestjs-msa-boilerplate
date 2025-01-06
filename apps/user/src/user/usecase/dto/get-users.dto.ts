@@ -1,6 +1,5 @@
-import { CommonFindManyDto } from '@libs/common';
+import { CommonFindManyDto, UserMicroService } from '@libs/common';
 import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
-import { UserRoleEnum } from '@libs/database';
 
 export class GetUsersDto extends CommonFindManyDto {
   @IsEmail()
@@ -11,7 +10,7 @@ export class GetUsersDto extends CommonFindManyDto {
   @IsOptional()
   username?: string;
 
-  @IsEnum(UserRoleEnum)
+  @IsEnum(UserMicroService.UserRoleEnum)
   @IsOptional()
-  role?: UserRoleEnum;
+  role?: UserMicroService.UserRoleEnum;
 }

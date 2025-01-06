@@ -44,6 +44,9 @@ message SignUpRequest {
 
 message SignUpResponse {
   int32 id = 1;
+  string email = 2;
+  string username = 3;
+  UserRoleEnum role = 4;
 }
 //message VerifyTokenRequest {
 //  string token = 1;

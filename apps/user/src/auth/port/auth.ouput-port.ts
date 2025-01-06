@@ -1,6 +1,23 @@
+import { UserMicroService } from '@libs/common';
+import {
+  HashPasswordDto,
+  IJwtPayload,
+  ILoginResponse,
+  LoginDto,
+  ParseBearerTokenDto,
+  SignUpDto,
+} from '../usecase';
+
+export interface ISignUpResponse {
+  id: number;
+  email: string;
+  username: string;
+  role: UserMicroService.UserRoleEnum;
+}
+
 export interface AuthOutputPort {
-  // checkUserByEmail(email: string): Promise<UserDomain>;
-  // createUser(user: UserDomain): Promise<UserDomain>;
-  // getUser(dto: GetUserDto): Promise<UserDomain>;
-  // getUsers(dto: GetUsersDto): Promise<IGetUsersResponse>;
+  login(dto: LoginDto): Promise<ILoginResponse>;
+  parseBearerToken(dto: ParseBearerTokenDto): Promise<IJwtPayload>;
+  hashPassword(dto: HashPasswordDto): Promise<string>;
+  signUp(dto: SignUpDto): Promise<ISignUpResponse>;
 }

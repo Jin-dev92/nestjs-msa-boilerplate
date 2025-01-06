@@ -15,6 +15,7 @@ import {
   CreateUserResponseMapper,
   GetUserRequestMapper,
   GetUserResponseMapper,
+  GetUsersRequestMapper,
   GetUsersResponseMapper,
 } from './mapper';
 
@@ -52,7 +53,9 @@ export class UserController implements UserMicroService.UserServiceController {
   async getUsers(
     payload: UserMicroService.GetUsersRequest,
   ): Promise<UserMicroService.GetUsersResponse> {
-    const { users, total } = await this.getUsersUseCase.execute(payload);
+    const { users, total } = await this.getUsersUseCase.execute(
+      new GetUsersRequestMapper(payload).toDto(),
+    );
     return new GetUsersResponseMapper(users, total).toGrpc();
   }
 
@@ -66,7 +69,6 @@ export class UserController implements UserMicroService.UserServiceController {
 
   async createUser(
     request: UserMicroService.CreateUserRequest,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     metadata?: Metadata, // logging 용 metadata
   ): Promise<UserMicroService.CreateUserResponse> {
     return new CreateUserResponseMapper(

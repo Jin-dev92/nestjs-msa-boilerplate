@@ -47,6 +47,24 @@
       ],
       "@libs/aws/*": [
         "libs/aws/src/*"
+      ],
+      "@apps/gateway": [
+        "apps/api-gateway/src"
+      ],
+      "@apps/gateway/*": [
+        "apps/api-gateway/src/*"
+      ],
+      "@apps/user": [
+        "apps/user/src"
+      ],
+      "@apps/user/*": [
+        "apps/user/src/*"
+      ],
+      "@apps/chat": [
+        "apps/chat/src"
+      ],
+      "@apps/chat/*": [
+        "apps/chat/src/*"
       ]
     }
   }
