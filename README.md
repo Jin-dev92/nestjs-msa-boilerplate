@@ -8,7 +8,7 @@
 - 데이터베이스: PostgreSQL + MongoDB
 - 테스트: Jest(현재 부분적으로 적용 되어있습니다. 조만간 커버리지를 높일 예정입니다.)
 - 캐싱: Redis
-- 로깅: Winston (예정)
+- 로깅: Winston (예정) +  ELK (예정) + AWS CloudWatch (예정)
 - 모니터링: Prometheus + Grafana (예정)
 - CI/CD: Github Actions (예정)
 - 클라우드: AWS Fargate (예정)
