@@ -7,12 +7,12 @@
 - 오케스트레이션: Kubernetes
 - 데이터베이스: PostgreSQL + MongoDB
 - 테스트: Jest(현재 부분적으로 적용 되어있습니다. 조만간 커버리지를 높일 예정입니다.)
+- 캐싱: Redis
 - 로깅: Winston (예정)
 - 모니터링: Prometheus + Grafana (예정)
 - CI/CD: Github Actions (예정)
 - 클라우드: AWS Fargate (예정)
 - 패턴: Saga Pattern (예정)
-- 
 ## 구성
 - apps
   - gateway - 마이크로 서비스를 통합하기 위한 API Gateway, HTTP 포트 번호는 3000
