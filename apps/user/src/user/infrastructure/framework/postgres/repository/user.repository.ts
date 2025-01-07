@@ -1,11 +1,16 @@
-import { IGetUsersResponse, UserOutputPort } from '../../../../port';
-import { GetUserDto, GetUsersDto } from '../../../../usecase';
 import { Repository } from 'typeorm';
-import { UserDomain } from '../../../../domain';
 import { UserEntity } from '../entity';
 import { Injectable } from '@nestjs/common';
 import { WhereClauseParser } from '@libs/common';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import {
+  GetUserDto,
+  GetUsersDto,
+  IGetUsersResponse,
+  UserDomain,
+  UserEntityMapper,
+  UserOutputPort,
+} from '@apps/user/user';
 
 @Injectable()
 export class UserRepository implements UserOutputPort {
@@ -17,7 +22,7 @@ export class UserRepository implements UserOutputPort {
         email,
       },
     });
-    return new UserDomain(user);
+    return new UserEntityMapper(user).toDomain();
   }
 
   async createUser(user: UserDomain): Promise<UserDomain> {
@@ -29,7 +34,7 @@ export class UserRepository implements UserOutputPort {
         username,
       }),
     );
-    return new UserDomain(userEntity);
+    return new UserEntityMapper(userEntity).toDomain();
   }
 
   async getUser(dto: GetUserDto): Promise<UserDomain> {
@@ -48,7 +53,7 @@ export class UserRepository implements UserOutputPort {
       where.role = role;
     } // @todo 좀더 나은 로직으로 수정 예정
     const userEntity = await this.userRepository.findOneBy(where);
-    return new UserDomain(userEntity);
+    return new UserEntityMapper(userEntity).toDomain();
   }
 
   async getUsers(dto: GetUsersDto): Promise<IGetUsersResponse> {
@@ -63,7 +68,9 @@ export class UserRepository implements UserOutputPort {
     });
 
     return {
-      users: userEntities.map((userEntity) => new UserDomain(userEntity)),
+      users: userEntities.map((userEntity) =>
+        new UserEntityMapper(userEntity).toDomain(),
+      ),
       total: count,
     };
   }

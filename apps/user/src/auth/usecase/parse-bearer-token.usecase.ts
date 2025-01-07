@@ -1,9 +1,14 @@
 import { ENVIRONMENT_KEYS, UseCase, UserMicroService } from '@libs/common';
 import { IJwtPayload, ParseBearerTokenDto } from '@apps/user/auth';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+@Injectable()
 export class ParseBearerTokenUsecase
   implements UseCase<ParseBearerTokenDto, Promise<IJwtPayload>>
 {

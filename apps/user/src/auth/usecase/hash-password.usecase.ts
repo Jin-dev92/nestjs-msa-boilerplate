@@ -1,9 +1,10 @@
 import { ENVIRONMENT_KEYS, UseCase } from '@libs/common';
 import { HashPasswordDto } from '@apps/user/auth';
 import * as bcrypt from 'bcrypt';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+@Injectable()
 export class HashPasswordUsecase
   implements UseCase<HashPasswordDto, Promise<string>>
 {

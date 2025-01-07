@@ -1,12 +1,17 @@
-import { UseCase } from '@libs/common';
+import { GRPC_NAME, UseCase } from '@libs/common';
 import { CreateUserDto } from './dto';
 import { UserOutputPort } from '../port';
 import { UserDomain } from '../domain';
+import { Inject, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CreateUserUsecase
   implements UseCase<CreateUserDto, Promise<UserDomain>>
 {
-  constructor(private readonly userOutputPort: UserOutputPort) {}
+  constructor(
+    @Inject(GRPC_NAME.USER_GRPC)
+    private readonly userOutputPort: UserOutputPort,
+  ) {}
 
   async execute(dto: CreateUserDto): Promise<UserDomain> {
     const isExist = await this.userOutputPort.checkUserByEmail(dto.email);

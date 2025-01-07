@@ -7,7 +7,9 @@ import {
 import { IJwtPayload, ILoginResponse, LoginDto } from '@apps/user/auth';
 import { JwtService } from '@nestjs/jwt';
 import { UserDomain, UserOutputPort } from '@apps/user/user';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class LoginUsecase
   implements UseCase<LoginDto, Promise<ILoginResponse>>
 {

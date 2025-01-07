@@ -1,7 +1,7 @@
 import { UserRoleEnum } from '@libs/common/grpc/proto/user';
 
 export class UserDomain {
-  private readonly _id: number;
+  private _id: number;
   private readonly _email: string;
   private readonly _password: string;
   private readonly _username: string;
@@ -20,11 +20,9 @@ export class UserDomain {
     this._username = username;
     this._role = role;
   }
-
-  // public set setEmail(email: string) {}
-  // public set setPassword(password: string) {}
-  // public set setUsername(username: string) {}
-  // public set setRole(role: UserRoleEnum) {}
+  public setId(id: number) {
+    this._id = id;
+  }
 
   get email(): string {
     return this._email;

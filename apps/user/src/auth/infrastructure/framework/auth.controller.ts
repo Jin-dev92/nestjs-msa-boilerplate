@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { UserMicroService } from '@libs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
+import { GrpcInterceptor, UserMicroService } from '@libs/common';
 import { Metadata } from '@grpc/grpc-js';
 import {
   HashPasswordResponseMapper,
@@ -7,7 +7,9 @@ import {
   LoginUsecase,
   ParseBearerTokenUsecase,
 } from '@apps/user/auth';
+import { SignUpUsecase } from '@apps/user/auth/usecase/sign-up.usecase';
 
+@UseInterceptors(GrpcInterceptor)
 @UserMicroService.AuthServiceControllerMethods()
 @Controller()
 export class AuthController implements UserMicroService.AuthServiceController {
@@ -15,6 +17,7 @@ export class AuthController implements UserMicroService.AuthServiceController {
     private readonly parseBearerTokenUsecase: ParseBearerTokenUsecase,
     private readonly loginUsecase: LoginUsecase,
     private readonly hashPasswordUsecase: HashPasswordUsecase,
+    private readonly signUpUsecase: SignUpUsecase,
   ) {}
 
   /*@MessagePattern({ cmd: MESSAGE_PATTERN_NAME.USER.LOGIN })*/
@@ -39,6 +42,6 @@ export class AuthController implements UserMicroService.AuthServiceController {
   }
 
   async signUp(request: UserMicroService.SignUpRequest, metadata?: Metadata) {
-    return undefined;
+    return await this.signUpUsecase.execute(request);
   }
 }
