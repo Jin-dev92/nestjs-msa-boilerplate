@@ -34,7 +34,7 @@ export class GrpcInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((value, index) => {
         const responseTime = requestTime.unix() - dayjs().unix();
-        console.log({ ...log, responseTime });
+        console.log(JSON.stringify({ ...log, responseTime }));
       }),
     );
   }
