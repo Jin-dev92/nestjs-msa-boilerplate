@@ -8,6 +8,8 @@ import {
   ParseBearerTokenUsecase,
   SignUpUsecase,
 } from '@apps/user/auth/usecase';
+import { GRPC_NAME } from '@libs/common';
+import { UserRepository } from '@apps/user/user';
 
 @Module({
   imports: [UserModule, JwtModule],
@@ -17,6 +19,10 @@ import {
     HashPasswordUsecase,
     ParseBearerTokenUsecase,
     SignUpUsecase,
+    {
+      provide: GRPC_NAME.USER_GRPC,
+      useClass: UserRepository,
+    },
   ],
 })
 export class AuthModule {}

@@ -1,13 +1,14 @@
 import {
   dayjs,
   ENVIRONMENT_KEYS,
+  GRPC_NAME,
   UseCase,
   UserMicroService,
 } from '@libs/common';
 import { IJwtPayload, ILoginResponse, LoginDto } from '@apps/user/auth';
 import { JwtService } from '@nestjs/jwt';
 import { UserDomain, UserOutputPort } from '@apps/user/user';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class LoginUsecase
@@ -15,6 +16,7 @@ export class LoginUsecase
 {
   constructor(
     private readonly jwtService: JwtService,
+    @Inject(GRPC_NAME.USER_GRPC)
     private readonly userOutputPort: UserOutputPort,
   ) {}
 

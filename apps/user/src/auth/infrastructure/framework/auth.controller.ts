@@ -6,8 +6,8 @@ import {
   HashPasswordUsecase,
   LoginUsecase,
   ParseBearerTokenUsecase,
+  SignUpUsecase,
 } from '@apps/user/auth';
-import { SignUpUsecase } from '@apps/user/auth/usecase/sign-up.usecase';
 
 @UseInterceptors(GrpcInterceptor)
 @UserMicroService.AuthServiceControllerMethods()
