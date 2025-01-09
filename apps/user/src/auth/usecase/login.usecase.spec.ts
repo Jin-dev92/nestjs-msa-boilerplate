@@ -50,7 +50,7 @@ describe('LoginUsecase', () => {
 
     it('should return access and refresh tokens', async () => {
         const dto: LoginDto = {
-            email: 'test@example.com',
+            email: 'kpasd002@gmail.com',
             password: 'password',
         };
 

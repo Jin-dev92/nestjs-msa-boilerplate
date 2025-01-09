@@ -1,21 +1,22 @@
 import {Test, TestingModule} from '@nestjs/testing';
-import {SignUpUsecase} from './sign-up.usecase';
-import {SignUpDto} from './dto';
-import {UserDomain} from '../../user';
+import {CreateUserUsecase} from './create-user-usecase';
+import {UserDomain} from '../domain';
 import {GRPC_NAME} from '@libs/common';
+import {CreateUserDto} from './dto';
 import {BadRequestException} from '@nestjs/common';
 
 const mockUserOutputPort = {
+  checkUserByEmail: jest.fn(),
   createUser: jest.fn(),
 };
 
-describe('SignUpUsecase', () => {
-  let usecase: SignUpUsecase;
+describe('CreateUserUsecase', () => {
+  let usecase: CreateUserUsecase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SignUpUsecase,
+        CreateUserUsecase,
         {
           provide: GRPC_NAME.USER_GRPC,
           useValue: mockUserOutputPort,
@@ -23,34 +24,36 @@ describe('SignUpUsecase', () => {
       ],
     }).compile();
 
-    usecase = module.get<SignUpUsecase>(SignUpUsecase);
+    usecase = module.get<CreateUserUsecase>(CreateUserUsecase);
   });
 
   it('should be defined', () => {
     expect(usecase).toBeDefined();
   });
 
-  it('should create a new user and return the user domain object', async () => {
-    const dto: SignUpDto = {
+  it('should create a new user if email does not exist', async () => {
+    const dto: CreateUserDto = {
       email: 'kpasd002@gmail.com',
       password: 'password',
       username: 'Test User',
     };
 
-    const user: UserDomain = new UserDomain(dto);
+    const user = new UserDomain(dto);
+    jest.spyOn(mockUserOutputPort, 'checkUserByEmail').mockResolvedValueOnce(null);
     jest.spyOn(mockUserOutputPort, 'createUser').mockResolvedValueOnce(user);
 
     await expect(usecase.execute(dto)).resolves.toEqual(user);
   });
 
-  it('should throw a BadRequestException if user creation fails', async () => {
-    const dto: SignUpDto = {
+  it('should throw an error if email already exists', async () => {
+    const dto: CreateUserDto = {
       email: 'kpasd002@gmail.com',
       password: 'password',
       username: 'Test User',
     };
 
-    jest.spyOn(mockUserOutputPort, 'createUser').mockRejectedValueOnce(new Error());
+    const user = new UserDomain(dto);
+    jest.spyOn(mockUserOutputPort, 'checkUserByEmail').mockResolvedValueOnce(user);
 
     await expect(usecase.execute(dto)).rejects.toThrow(BadRequestException);
   });
