@@ -23,7 +23,7 @@ describe('user >> hash-password.usecase', () => {
         usecase = module.get<HashPasswordUsecase>(HashPasswordUsecase);
     })
 
-    it('user >> hash-password.usecase', async () => {
+    it('it should be return hashedPassword', async () => {
         const dto: HashPasswordDto = {
             password: 'strongPassword',
             salt: 'saltAndPepper'
