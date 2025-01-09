@@ -1,8 +1,8 @@
-import { GRPC_NAME, UseCase } from '@libs/common';
-import { CreateUserDto } from './dto';
-import { UserOutputPort } from '../port';
-import { UserDomain } from '../domain';
-import { Inject, Injectable } from '@nestjs/common';
+import {GRPC_NAME, UseCase} from '@libs/common';
+import {CreateUserDto} from './dto';
+import {UserOutputPort} from '../port';
+import {UserDomain} from '../domain';
+import {BadRequestException, Inject, Injectable} from '@nestjs/common';
 
 @Injectable()
 export class CreateUserUsecase
@@ -16,7 +16,7 @@ export class CreateUserUsecase
   async execute(dto: CreateUserDto): Promise<UserDomain> {
     const isExist = await this.userOutputPort.checkUserByEmail(dto.email);
     if (isExist) {
-      throw new Error('해당 이메일로 이미 가입이 되어있습니다.');
+      throw new BadRequestException('해당 이메일로 이미 가입이 되어있습니다.');
     }
     const userDomain = new UserDomain({
       email: dto.email,
