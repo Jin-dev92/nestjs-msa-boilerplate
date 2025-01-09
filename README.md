@@ -42,6 +42,7 @@ docker compose up -d
 yarn test:user # 유저 모듈 테스트
 yarn test:chat # 채팅 모듈 테스트(미구현)
 yarn test:e2e # E2E 테스트(미구현)
+yarn test:user:integration # 통합 테스트(미구현)
 ```
 [//]: # (## 인프라 구조)
 [//]: # (![Infrastructure]&#40;~@source/.vuepress/public/image/2021_04_user_count.png&#41;)

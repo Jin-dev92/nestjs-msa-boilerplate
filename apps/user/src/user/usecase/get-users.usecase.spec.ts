@@ -30,7 +30,7 @@ describe('GetUsersUsecase', () => {
     });
 
     it('should return a list of users', async () => {
-        const dto: GetUsersDto = {skip: 10, take: 10};
+        const dto: GetUsersDto = {skip: 0, take: 10};
         const response: IGetUsersResponse = {users: [], total: 0};
         jest.spyOn(mockUserOutputPort, 'getUsers').mockResolvedValueOnce(response);
 
