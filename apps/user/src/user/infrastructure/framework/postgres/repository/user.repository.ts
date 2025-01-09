@@ -1,16 +1,13 @@
-import { Repository } from 'typeorm';
-import { UserEntity } from '../entity';
-import { Injectable } from '@nestjs/common';
-import { WhereClauseParser } from '@libs/common';
-import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
-import {
-  GetUserDto,
-  GetUsersDto,
-  IGetUsersResponse,
-  UserDomain,
-  UserEntityMapper,
-  UserOutputPort,
-} from '@apps/user/user';
+import {Repository} from 'typeorm';
+import {UserEntity} from '../entity';
+import {Injectable} from '@nestjs/common';
+import {WhereClauseParser} from '@libs/common';
+import {FindOptionsWhere} from 'typeorm/find-options/FindOptionsWhere';
+import {IGetUsersResponse, UserOutputPort} from "../../../../port";
+import {UserDomain} from "../../../../domain";
+import {UserEntityMapper} from "./mapper";
+import {GetUserDto, GetUsersDto} from "../../../../usecase";
+
 
 @Injectable()
 export class UserRepository implements UserOutputPort {

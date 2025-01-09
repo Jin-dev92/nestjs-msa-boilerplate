@@ -1,14 +1,9 @@
-import {
-  dayjs,
-  ENVIRONMENT_KEYS,
-  GRPC_NAME,
-  UseCase,
-  UserMicroService,
-} from '@libs/common';
-import { IJwtPayload, ILoginResponse, LoginDto } from '@apps/user/auth';
-import { JwtService } from '@nestjs/jwt';
-import { UserDomain, UserOutputPort } from '@apps/user/user';
-import { Inject, Injectable } from '@nestjs/common';
+import {dayjs, ENVIRONMENT_KEYS, GRPC_NAME, UseCase, UserMicroService,} from '@libs/common';
+import {JwtService} from '@nestjs/jwt';
+import {Inject, Injectable} from '@nestjs/common';
+import {LoginDto} from "./dto";
+import {IJwtPayload, ILoginResponse} from "./interfaces";
+import {UserDomain, UserOutputPort} from "../../user";
 
 @Injectable()
 export class LoginUsecase

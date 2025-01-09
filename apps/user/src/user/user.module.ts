@@ -1,13 +1,9 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserController, UserEntity, UserRepository } from './infrastructure';
-import {
-  CheckUserByEmailUsecase,
-  CreateUserUsecase,
-  GetUsersUsecase,
-  GetUserUsecase,
-} from '@apps/user/user/usecase';
-import { GRPC_NAME } from '@libs/common';
+import {Module} from '@nestjs/common';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {UserController, UserEntity, UserRepository} from './infrastructure';
+
+import {GRPC_NAME} from '@libs/common';
+import {CheckUserByEmailUsecase, CreateUserUsecase, GetUsersUsecase, GetUserUsecase} from "./usecase";
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],

@@ -1,7 +1,7 @@
-import { GRPC_NAME, UseCase } from '@libs/common';
-import { SignUpDto } from '@apps/user/auth';
-import { UserDomain, UserOutputPort } from '@apps/user/user';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {GRPC_NAME, UseCase} from '@libs/common';
+import {BadRequestException, Inject, Injectable} from '@nestjs/common';
+import {SignUpDto} from "./dto";
+import {UserDomain, UserOutputPort} from "../../user";
 
 @Injectable()
 export class SignUpUsecase implements UseCase<SignUpDto, Promise<UserDomain>> {

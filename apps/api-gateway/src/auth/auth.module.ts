@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { AuthGrpc } from '@apps/user/auth';
-import { GRPC_NAME } from '@libs/common';
+import {Module} from '@nestjs/common';
+import {AuthService} from './auth.service';
+import {AuthController} from './auth.controller';
+import {GRPC_NAME} from '@libs/common';
+import {AuthGrpc} from "../../../user/src/auth";
 
 @Module({
   controllers: [AuthController],

@@ -1,13 +1,8 @@
-import { Controller, UseInterceptors } from '@nestjs/common';
-import { GrpcInterceptor, UserMicroService } from '@libs/common';
-import { Metadata } from '@grpc/grpc-js';
-import {
-  HashPasswordResponseMapper,
-  HashPasswordUsecase,
-  LoginUsecase,
-  ParseBearerTokenUsecase,
-  SignUpUsecase,
-} from '@apps/user/auth';
+import {Controller, UseInterceptors} from '@nestjs/common';
+import {GrpcInterceptor, UserMicroService} from '@libs/common';
+import {Metadata} from '@grpc/grpc-js';
+import {HashPasswordUsecase, LoginUsecase, ParseBearerTokenUsecase, SignUpUsecase} from "../../usecase";
+import {HashPasswordResponseMapper} from "../mapper";
 
 @UseInterceptors(GrpcInterceptor)
 @UserMicroService.AuthServiceControllerMethods()

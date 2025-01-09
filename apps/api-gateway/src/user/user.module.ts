@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
-import { GRPC_NAME } from '@libs/common';
-import { UserGrpc } from '@apps/user/user';
+import {Module} from '@nestjs/common';
+import {UserService} from './user.service';
+import {UserController} from './user.controller';
+import {GRPC_NAME} from '@libs/common';
+import {UserGrpc} from "../../../user/src/user";
 
 @Module({
   controllers: [UserController],

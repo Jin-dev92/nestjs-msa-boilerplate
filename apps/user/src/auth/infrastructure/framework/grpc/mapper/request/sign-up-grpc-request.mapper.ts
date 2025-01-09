@@ -1,5 +1,5 @@
-import { UserMicroService } from '@libs/common';
-import { SignUpDto } from '@apps/user/auth';
+import {UserMicroService} from '@libs/common';
+import {SignUpDto} from "../../../../../usecase";
 
 export class SignUpGrpcRequestMapper {
   constructor(private readonly dto: SignUpDto) {}

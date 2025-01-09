@@ -1,9 +1,9 @@
-import { UserMicroService } from '@libs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Inject, OnModuleInit } from '@nestjs/common';
-import { lastValueFrom } from 'rxjs';
-import { IGetUsersResponse, UserOutputPort } from '../../../port';
-import { UserDomain } from '../../../domain';
+import {UserMicroService} from '@libs/common';
+import {ClientGrpc} from '@nestjs/microservices';
+import {Inject, OnModuleInit} from '@nestjs/common';
+import {lastValueFrom} from 'rxjs';
+import {IGetUsersResponse, UserOutputPort} from '../../../port';
+import {UserDomain} from '../../../domain';
 import {
   CheckUserByEmailGrpcResponseMapper,
   CreateUserGrpcRequestMapper,
@@ -13,7 +13,7 @@ import {
   GetUsersGrpcRequestMapper,
   GetUsersGrpcResponseMapper,
 } from './mapper';
-import { CreateUserDto, GetUserDto, GetUsersDto } from '@apps/user/user';
+import {CreateUserDto, GetUserDto, GetUsersDto} from "../../../usecase";
 
 export class UserGrpc implements UserOutputPort, OnModuleInit {
   private userService: UserMicroService.UserServiceClient;

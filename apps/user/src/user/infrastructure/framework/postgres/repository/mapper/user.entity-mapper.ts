@@ -1,4 +1,5 @@
-import { UserDomain, UserEntity } from '@apps/user/user';
+import {UserEntity} from "../../entity";
+import {UserDomain} from "../../../../../domain";
 
 export class UserEntityMapper {
   constructor(private readonly user: UserEntity) {}

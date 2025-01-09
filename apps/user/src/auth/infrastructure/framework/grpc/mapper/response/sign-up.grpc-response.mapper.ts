@@ -1,5 +1,5 @@
-import { UserMicroService } from '@libs/common';
-import { ISignUpResponse } from '@apps/user/auth/port';
+import {UserMicroService} from '@libs/common';
+import {ISignUpResponse} from "../../../../../port";
 
 export class SignUpGrpcResponseMapper {
   constructor(private readonly response: UserMicroService.SignUpResponse) {}

@@ -1,19 +1,12 @@
-import { UserMicroService } from '@libs/common';
-import { AuthOutputPort, ISignUpResponse } from '../../../port';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Inject, OnModuleInit } from '@nestjs/common';
+import {UserMicroService} from '@libs/common';
+import {AuthOutputPort, ISignUpResponse} from '../../../port';
+import {ClientGrpc} from '@nestjs/microservices';
+import {Inject, OnModuleInit} from '@nestjs/common';
 
-import { lastValueFrom } from 'rxjs';
-import {
-  HashPasswordDto,
-  IJwtPayload,
-  ILoginResponse,
-  LoginDto,
-  ParseBearerTokenDto,
-  SignUpDto,
-  SignUpGrpcRequestMapper,
-  SignUpGrpcResponseMapper,
-} from '@apps/user/auth';
+import {lastValueFrom} from 'rxjs';
+import {HashPasswordDto, IJwtPayload, ILoginResponse, LoginDto, ParseBearerTokenDto, SignUpDto} from "../../../usecase";
+import {SignUpGrpcRequestMapper, SignUpGrpcResponseMapper} from "./mapper";
+
 
 export class AuthGrpc implements AuthOutputPort, OnModuleInit {
   private authService: UserMicroService.AuthServiceClient;

@@ -136,7 +136,7 @@
       "^@libs/encryption(|/.*)$": "<rootDir>/libs/encryption/src/$1",
       "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@libs/upload(|/.*)$": "<rootDir>/libs/upload/src/$1",
-      "^@libs/aws(|/.*)$": "<rootDir>/libs/aws/src/$1"
+      "^@apps/(|/.*)$": "<rootDir>/apps/$1/src"
     }
   }
 }

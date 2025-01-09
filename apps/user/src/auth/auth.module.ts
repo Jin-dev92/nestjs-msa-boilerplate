@@ -1,15 +1,10 @@
-import { Module } from '@nestjs/common';
-import { UserModule } from '../user/user.module';
-import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from '@apps/user/auth/infrastructure';
-import {
-  HashPasswordUsecase,
-  LoginUsecase,
-  ParseBearerTokenUsecase,
-  SignUpUsecase,
-} from '@apps/user/auth/usecase';
-import { GRPC_NAME } from '@libs/common';
-import { UserRepository } from '@apps/user/user';
+import {Module} from '@nestjs/common';
+import {UserModule} from '../user/user.module';
+import {JwtModule} from '@nestjs/jwt';
+import {GRPC_NAME} from '@libs/common';
+import {AuthController} from "./infrastructure";
+import {HashPasswordUsecase, LoginUsecase, ParseBearerTokenUsecase, SignUpUsecase} from "./usecase";
+import {UserRepository} from "../user";
 
 @Module({
   imports: [UserModule, JwtModule],

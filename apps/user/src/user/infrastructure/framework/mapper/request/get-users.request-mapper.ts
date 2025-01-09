@@ -1,5 +1,5 @@
-import { UserMicroService } from '@libs/common';
-import { GetUsersDto } from '@apps/user/user';
+import {UserMicroService} from '@libs/common';
+import {GetUsersDto} from "../../../../usecase";
 
 export class GetUsersRequestMapper {
   constructor(private readonly request: UserMicroService.GetUsersRequest) {}
