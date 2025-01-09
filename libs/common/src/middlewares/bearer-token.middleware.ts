@@ -9,6 +9,7 @@ import {Cache, CACHE_MANAGER} from "@nestjs/cache-manager";
 export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
     authService: UserMicroService.AuthServiceClient;
     userService: UserMicroService.UserServiceClient;
+    private readonly cacheKeyPrefix = 'user:';
 
     constructor(
         @Inject(MICROSERVICE_NAME.USER_SERVICE)
@@ -47,11 +48,12 @@ export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
             ) {
                 throw new UnauthorizedException('토큰의 타입이 올바르지 않습니다.');
             }
-            const cachedPayload = await this.cacheManager.get(`user:${payload.sub}`);
-            if(cachedPayload){
-              req.user = cachedPayload;
-              return next();
+            const cachedPayload = await this.cacheManager.get([this.cacheKeyPrefix, payload.sub].join(''));
+            if (cachedPayload) {
+                req.user = cachedPayload;
+                return next();
             }
+            
             const user = await lastValueFrom(
                 this.userService.getUser({id: payload.sub}),
             );
@@ -66,7 +68,7 @@ export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
             if (diff < 0) {
                 throw new UnauthorizedException('토큰이 만료되었습니다.');
             }
-            await this.cacheManager.set(`user:${user.user.id}`, user, diff);
+            await this.cacheManager.set([this.cacheKeyPrefix, user.user.id].join(), user, diff);
             req.user = payload;
             next();
         } catch (e) {
