@@ -33,7 +33,7 @@ describe('user >> hash-password.usecase', () => {
         jest.spyOn(mockConfigService, 'getOrThrow').mockResolvedValueOnce(hashRound);
         jest.spyOn(bcypt, 'hash').mockImplementationOnce((password, hashRound) => 'hashedPassword');
         const result = await usecase.execute(dto);
-        expect(result).toBe('hashedPassword');
+        expect(result).toEqual('hashedPassword');
     });
 
 });

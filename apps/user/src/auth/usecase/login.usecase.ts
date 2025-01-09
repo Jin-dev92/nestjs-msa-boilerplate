@@ -4,6 +4,7 @@ import {Inject, Injectable} from '@nestjs/common';
 import {LoginDto} from "./dto";
 import {IJwtPayload, ILoginResponse} from "./interfaces";
 import {UserDomain, UserOutputPort} from "../../user";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class LoginUsecase
@@ -13,6 +14,7 @@ export class LoginUsecase
     private readonly jwtService: JwtService,
     @Inject(GRPC_NAME.USER_GRPC)
     private readonly userOutputPort: UserOutputPort,
+    private readonly configService: ConfigService
   ) {}
 
   async execute(dto: LoginDto): Promise<ILoginResponse> {
@@ -38,8 +40,8 @@ export class LoginUsecase
   ) {
     const secret =
       type === UserMicroService.TokenType.ACCESS
-        ? ENVIRONMENT_KEYS.JWT_ACCESS_TOKEN_SECRET
-        : ENVIRONMENT_KEYS.JWT_REFRESH_TOKEN_SECRET;
+        ? this.configService.getOrThrow<string>(ENVIRONMENT_KEYS.JWT_ACCESS_TOKEN_SECRET)
+        : this.configService.getOrThrow<string>(ENVIRONMENT_KEYS.JWT_REFRESH_TOKEN_SECRET);
     const expiresIn = type === UserMicroService.TokenType.ACCESS ? '1h' : '14d';
     const { id, email, role } = user;
     const payload: IJwtPayload = {
