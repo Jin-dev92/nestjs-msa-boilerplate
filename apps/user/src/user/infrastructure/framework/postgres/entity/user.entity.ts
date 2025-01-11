@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Exclude } from 'class-transformer';
-import { CommonEntity } from '@libs/database/entities';
-import { UserRoleEnum } from '@libs/common/grpc/proto/user';
+import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Exclude} from 'class-transformer';
+import {CommonEntity} from '@libs/database/entities';
+import {UserRoleEnum} from '@libs/common/grpc/proto/user';
 
 @Entity()
 export class UserEntity extends CommonEntity {
@@ -18,6 +18,6 @@ export class UserEntity extends CommonEntity {
   @Column()
   username: string;
 
-  @Column({ type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER })
+  @Column({ type: 'simple-enum', enum: UserRoleEnum, default: UserRoleEnum.USER })
   role: UserRoleEnum;
 }

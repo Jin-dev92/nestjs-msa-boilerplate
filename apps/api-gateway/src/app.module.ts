@@ -1,10 +1,5 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import {MiddlewareConsumer, Module, NestModule, RequestMethod,} from '@nestjs/common';
+import {ConfigModule, ConfigService} from '@nestjs/config';
 import {
   BearerTokenMiddleware,
   ChatMicroService,
@@ -16,12 +11,12 @@ import {
 
 import * as cors from 'cors';
 import helmet from 'helmet';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ChatModule } from './chat/chat.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { join } from 'path';
-import { HealthModule } from './health/health.module';
+import {ClientsModule, Transport} from '@nestjs/microservices';
+import {ChatModule} from './chat/chat.module';
+import {AuthModule} from './auth/auth.module';
+import {UserModule} from './user/user.module';
+import {join} from 'path';
+import {HealthModule} from './health/health.module';
 
 @Module({
   imports: [
@@ -46,7 +41,7 @@ import { HealthModule } from './health/health.module';
             transport: Transport.GRPC,
             options: {
               channelOptions: {
-                interceptors: [traceInterceptor('gateway')],
+                interceptors: [traceInterceptor('gateway')], // 게이트웨이에서 각 서비스에서 발생한 로그를 중앙화
               },
               package: UserMicroService.protobufPackage,
               protoPath: join(process.cwd(), 'proto/user.proto'),

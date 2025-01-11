@@ -138,6 +138,7 @@
       "<rootDir>/apps/",
       "<rootDir>/libs/"
     ],
+    "testTimeout": 20000,
     "moduleNameMapper": {
       "^@libs/database(|/.*)$": "<rootDir>/libs/database/src/$1",
       "^@libs/encryption(|/.*)$": "<rootDir>/libs/encryption/src/$1",

@@ -15,7 +15,7 @@ import {UserRepository} from "../user";
     ParseBearerTokenUsecase,
     SignUpUsecase,
     {
-      provide: GRPC_NAME.USER_GRPC,
+      provide: GRPC_NAME.AUTH_GRPC,
       useClass: UserRepository,
     },
   ],
