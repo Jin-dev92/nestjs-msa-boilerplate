@@ -132,6 +132,7 @@
       ".proto",
       "enum.ts"
     ],
+    "verbose": true,
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [

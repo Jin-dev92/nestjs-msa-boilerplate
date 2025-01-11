@@ -2,7 +2,14 @@ import {Test, TestingModule} from "@nestjs/testing";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserEntity, UserRepository} from "./infrastructure";
 import {CheckUserByEmailUsecase, CreateUserUsecase, GetUsersUsecase, GetUserUsecase} from "./usecase";
-import {HashPasswordDto, HashPasswordUsecase, LoginUsecase, ParseBearerTokenUsecase, SignUpUsecase} from "../auth";
+import {
+    HashPasswordDto,
+    HashPasswordUsecase,
+    LoginDto,
+    LoginUsecase,
+    ParseBearerTokenUsecase,
+    SignUpUsecase
+} from "../auth";
 import {GRPC_NAME} from "@libs/common";
 import {AuthOutputPort} from "../auth/port";
 import {UserOutputPort} from "./port";
@@ -13,7 +20,6 @@ import * as bcrypt from 'bcrypt';
 import {JwtModule} from "@nestjs/jwt";
 
 describe('User MicroService - Integration Test', () => {
-    // let cacheManager: Cache
     let dataSource: DataSource
     let configService: ConfigService
 
@@ -34,9 +40,6 @@ describe('User MicroService - Integration Test', () => {
                 await ConfigModule.forRoot({
                     envFilePath: 'apps/user/.env'
                 }),
-                // CacheModule.register({
-                //     ttl: 2000,
-                // }),
                 JwtModule,
                 TypeOrmModule.forRoot({
                     type: 'sqlite', // 가장 가벼운 데이터베이스이기 때문에 테스트에서 선정
@@ -100,33 +103,42 @@ describe('User MicroService - Integration Test', () => {
             }))
         ))
     })
-    describe('user microService - usecases', () => {
-        describe('checkUserByEmailUsecase ', () => {
-        });
-        describe('getUsersUsecase ', () => {
-        });
-        describe('createUserUsecase ', () => {
-        });
-        describe('getUserUsecase ', () => {
-        });
-    })
+    // describe('user microService - usecases', () => {
+    //     describe('checkUserByEmailUsecase ', () => {
+    //     });
+    //     describe('getUsersUsecase ', () => {
+    //     });
+    //     describe('createUserUsecase ', () => {
+    //     });
+    //     describe('getUserUsecase ', () => {
+    //     });
+    // })
     describe('auth microService - usecases', () => {
-        describe('hashPasswordUsecase ', () => {
-            it('it should be create hashedPassword', async () => {
-                expect(hashPasswordUsecase).toBeDefined();
-                const dto: HashPasswordDto = {
-                    password: 'strongPassword',
-                    salt: 'saltAndPepper'
-                }
-                expect(await bcrypt.compare(dto.password, await hashPasswordUsecase.execute(dto))).toBe(true);
-            });
+        it('it should be create hashedPassword', async () => {
+            expect(hashPasswordUsecase).toBeDefined();
+
+            const dto: HashPasswordDto = {
+                password: 'strongPassword',
+                salt: 'saltAndPepper'
+            }
+            expect(await bcrypt.compare(dto.password, await hashPasswordUsecase.execute(dto))).toBe(true);
         });
-        describe('loginUsecase ', () => {
+        it("loginUsecase should be return accessToken and refreshToken", async () => {
+            expect(loginUsecase).toBeDefined();
+            const dto: LoginDto = {
+                email: '1@test.com',
+                password: 'password1'
+            }
+            const result = await loginUsecase.execute(dto)
+            expect(result).toHaveProperty('accessToken');
+            expect(result).toHaveProperty('refreshToken');
         });
-        describe('parseBearerTokenUsecase ', () => {
-        });
-        describe('signUpUsecase ', () => {
-        });
+        it("parseBearerTokenUsecase should be defined", () => {
+            expect(parseBearerTokenUsecase).toBeDefined();
+        })
+        it("signUpUsecase should be defined", () => {
+            expect(signUpUsecase).toBeDefined();
+        })
     })
     afterAll(async () => {
         await dataSource.destroy()

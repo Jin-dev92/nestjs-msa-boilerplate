@@ -7,11 +7,15 @@ import {IGetUsersResponse, UserOutputPort} from "../../../../port";
 import {UserDomain} from "../../../../domain";
 import {UserEntityMapper} from "./mapper";
 import {GetUserDto, GetUsersDto} from "../../../../usecase";
+import {InjectRepository} from "@nestjs/typeorm";
 
 
 @Injectable()
 export class UserRepository implements UserOutputPort {
-  constructor(private readonly userRepository: Repository<UserEntity>) {}
+  constructor(
+      @InjectRepository(UserEntity)
+      private readonly userRepository: Repository<UserEntity>
+  ) {}
 
   async checkUserByEmail(email: string): Promise<UserDomain> {
     const user = await this.userRepository.findOne({

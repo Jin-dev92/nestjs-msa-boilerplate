@@ -49,7 +49,7 @@ export class LoginUsecase
       email,
       type,
       role,
-      exp:
+      expireIn:
         type === UserMicroService.TokenType.ACCESS
           ? dayjs().add(1, 'hour').unix()
           : dayjs().add(14, 'day').unix(),

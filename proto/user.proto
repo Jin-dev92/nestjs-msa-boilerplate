@@ -80,7 +80,7 @@ message ParseBearerTokenResponse {
   string email = 2;
   UserRoleEnum role = 3;
   TokenType type = 4;
-  int32 exp = 5;
+  int32 expireIn = 5;
 }
 
 service UserService {
