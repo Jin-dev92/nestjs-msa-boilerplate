@@ -114,9 +114,10 @@ describe('User MicroService - Integration Test', () => {
                     password: 'strongPassword',
                     salt: 'saltAndPepper'
                 }
-                expect(await bcrypt.compare(dto.password, await hashPasswordUsecase.execute(dto))).toBe(true);
+                expect(await bcrypt.compare(dto.password, hashPasswordUsecase.execute(dto))).toBe(true);
             });
         })
+
         describe('loginUsecase', () => {
             it('it should be defined', () => {
                 expect(loginUsecase).toBeDefined();
@@ -134,7 +135,8 @@ describe('User MicroService - Integration Test', () => {
                 })
             });
         })
-        describe('hashPasswordUsecase', () => {
+
+        describe('parseBearerTokenUsecase', () => {
             it('it should be defined', () => {
                 expect(parseBearerTokenUsecase).toBeDefined();
             });
@@ -173,7 +175,8 @@ describe('User MicroService - Integration Test', () => {
                 });
             })
         })
-        describe('hashPasswordUsecase', () => {
+
+        describe('signUpUsecase', () => {
             it('it should be defined', () => {
                 expect(signUpUsecase).toBeDefined();
             });
