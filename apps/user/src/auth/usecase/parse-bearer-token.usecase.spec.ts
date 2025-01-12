@@ -67,7 +67,7 @@ describe('ParseBearerTokenUsecase', () => {
         const payload: IJwtPayload = {
             sub: 1,
             email: 'kpasd002@gmail.com',
-            exp: 1234567890,
+            expireIn: 1234567890,
             type: UserMicroService.TokenType.ACCESS,
             role: UserMicroService.UserRoleEnum.USER
         };

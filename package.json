@@ -20,9 +20,9 @@
     "test:gateway": "jest --testPathPattern=/apps/api-gateway --coverage",
     "test:user": "jest --testPathPattern=/apps/user --coverage",
     "test:chat": "jest --testPathPattern=/apps/chat --coverage",
-    "test:user:integration": "jest --testRegex='.*\\integration.spec\\.ts$' --coverage",
-    "test:chat:integration": "jest --testRegex='.*\\integration.spec\\.ts$' --coverage",
-    "test:gateway:integration": "jest --testRegex='.*\\integration.spec\\.ts$' --coverage",
+    "test:user:integration": "jest --testPathPattern=/apps/user --testRegex='.*\\integration.spec\\.ts$' --coverage",
+    "test:chat:integration": "jest --testPathPattern=/apps/chat --testRegex='.*\\integration.spec\\.ts$' --coverage",
+    "test:gateway:integration": "jest --testPathPattern=/apps/gateway --testRegex='.*\\integration.spec\\.ts$' --coverage",
     "test:e2e": "jest --testRegex='.*\\e2e.spec\\.ts$' --coverage",
     "migration-run": "typeorm migration:run",
     "migration-revert": "typeorm migration:revert"

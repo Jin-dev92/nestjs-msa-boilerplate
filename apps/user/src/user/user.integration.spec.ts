@@ -105,78 +105,94 @@ describe('User MicroService - Integration Test', () => {
         ))
     })
     describe('auth microService - usecases', () => {
-        it('it should be create hashedPassword', async () => {
-            expect(hashPasswordUsecase).toBeDefined();
-
-            const dto: HashPasswordDto = {
-                password: 'strongPassword',
-                salt: 'saltAndPepper'
-            }
-            expect(await bcrypt.compare(dto.password, await hashPasswordUsecase.execute(dto))).toBe(true);
-        });
-        it("loginUsecase should be return accessToken and refreshToken", async () => {
-            expect(loginUsecase).toBeDefined();
-            const dto: LoginDto = {
-                email: '1@test.com',
-                password: 'password1'
-            }
-            const result = await loginUsecase.execute(dto)
-            expect(result).toMatchObject<ILoginResponse>({
-                accessToken: expect.any(String),
-                refreshToken: expect.any(String)
-            })
-        });
-        it("parseBearerTokenUsecase should be return tokens", async () => {
-            expect(parseBearerTokenUsecase).toBeDefined();
-            expect(loginUsecase).toBeDefined();
-            const loginDto: LoginDto = {
-                email: '1@test.com',
-                password: 'password1'
-            }
-            const {accessToken, refreshToken} = await loginUsecase.execute(loginDto)
-
-            const accessTokenResult = await parseBearerTokenUsecase.execute({
-                token: ['bearer', accessToken].join(" "),
-                type: TokenType.ACCESS
+        describe('hashPasswordUsecase', () => {
+            it('it should be defined', () => {
+                expect(hashPasswordUsecase).toBeDefined();
             });
-
-            const refreshTokenResult = await parseBearerTokenUsecase.execute({
-                token: ['bearer', refreshToken].join(" "),
-                type: TokenType.REFRESH
-            });
-
-            expect(accessTokenResult).toMatchObject<IJwtPayload>({
-                sub: expect.any(Number),
-                email: '1@test.com',
-                role: UserRoleEnum.SUPER,
-                type: TokenType.ACCESS,
-                expireIn: expect.any(Number)
-            });
-
-            expect(refreshTokenResult).toMatchObject<IJwtPayload>({
-                sub: expect.any(Number),
-                email: '1@test.com',
-                role: UserRoleEnum.SUPER,
-                type: TokenType.REFRESH,
-                expireIn: expect.any(Number)
+            it('it should be create hashedPassword', async () => {
+                const dto: HashPasswordDto = {
+                    password: 'strongPassword',
+                    salt: 'saltAndPepper'
+                }
+                expect(await bcrypt.compare(dto.password, await hashPasswordUsecase.execute(dto))).toBe(true);
             });
         })
-        it("signUpUsecase should be defined", async () => {
-            expect(signUpUsecase).toBeDefined();
-            // 0부터 9999 사이의 랜덤한 숫자 생성
-            const randomNum = +Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        describe('loginUsecase', () => {
+            it('it should be defined', () => {
+                expect(loginUsecase).toBeDefined();
+            });
 
-            const dto: SignUpDto = {
-                email: `test${randomNum}@test.com`,
-                password: `password${randomNum}`,
-                username: `test${randomNum}`
-            }
+            it("loginUsecase should be return accessToken and refreshToken", async () => {
+                const dto: LoginDto = {
+                    email: '1@test.com',
+                    password: 'password1'
+                }
+                const result = await loginUsecase.execute(dto)
+                expect(result).toMatchObject<ILoginResponse>({
+                    accessToken: expect.any(String),
+                    refreshToken: expect.any(String)
+                })
+            });
+        })
+        describe('hashPasswordUsecase', () => {
+            it('it should be defined', () => {
+                expect(parseBearerTokenUsecase).toBeDefined();
+            });
+            it("parseBearerTokenUsecase should be return tokens", async () => {
+                expect(loginUsecase).toBeDefined();
+                const loginDto: LoginDto = {
+                    email: '1@test.com',
+                    password: 'password1'
+                }
+                const {accessToken, refreshToken} = await loginUsecase.execute(loginDto)
 
-            const userDomain = await signUpUsecase.execute(dto)
-            const user = await userOutputPort.getUser({
-                id: userDomain.id
+                const accessTokenResult = await parseBearerTokenUsecase.execute({
+                    token: ['bearer', accessToken].join(" "),
+                    type: TokenType.ACCESS
+                });
+
+                const refreshTokenResult = await parseBearerTokenUsecase.execute({
+                    token: ['bearer', refreshToken].join(" "),
+                    type: TokenType.REFRESH
+                });
+
+                expect(accessTokenResult).toMatchObject<IJwtPayload>({
+                    sub: expect.any(Number),
+                    email: '1@test.com',
+                    role: UserRoleEnum.SUPER,
+                    type: TokenType.ACCESS,
+                    expireIn: expect.any(Number)
+                });
+
+                expect(refreshTokenResult).toMatchObject<IJwtPayload>({
+                    sub: expect.any(Number),
+                    email: '1@test.com',
+                    role: UserRoleEnum.SUPER,
+                    type: TokenType.REFRESH,
+                    expireIn: expect.any(Number)
+                });
             })
-            expect(user).toMatchObject(userDomain)
+        })
+        describe('hashPasswordUsecase', () => {
+            it('it should be defined', () => {
+                expect(signUpUsecase).toBeDefined();
+            });
+            it("signUpUsecase should be defined", async () => {
+                // 0부터 9999 사이의 랜덤한 숫자 생성
+                const randomNum = +Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
+                const dto: SignUpDto = {
+                    email: `test${randomNum}@test.com`,
+                    password: `password${randomNum}`,
+                    username: `test${randomNum}`
+                }
+
+                const userDomain = await signUpUsecase.execute(dto)
+                const user = await userOutputPort.getUser({
+                    id: userDomain.id
+                })
+                expect(user).toMatchObject(userDomain)
+            })
         })
     })
 

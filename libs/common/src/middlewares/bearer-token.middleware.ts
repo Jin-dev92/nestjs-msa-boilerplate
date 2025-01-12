@@ -62,7 +62,7 @@ export class BearerTokenMiddleware implements NestMiddleware, OnModuleInit {
                 throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
             }
 
-            const expireDate = dayjs(payload.exp).unix();
+            const expireDate = dayjs(payload.expireIn).unix();
             const now = dayjs().unix();
             const diff = expireDate - now;
             if (diff < 0) {
