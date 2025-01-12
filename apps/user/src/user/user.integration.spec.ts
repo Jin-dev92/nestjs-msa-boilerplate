@@ -5,16 +5,19 @@ import {CheckUserByEmailUsecase, CreateUserUsecase, GetUsersUsecase, GetUserUsec
 import {
     HashPasswordDto,
     HashPasswordUsecase,
+    IJwtPayload,
+    ILoginResponse,
     LoginDto,
     LoginUsecase,
     ParseBearerTokenUsecase,
+    SignUpDto,
     SignUpUsecase
 } from "../auth";
 import {GRPC_NAME} from "@libs/common";
 import {AuthOutputPort} from "../auth/port";
 import {UserOutputPort} from "./port";
 import {DataSource, Repository} from "typeorm";
-import {UserRoleEnum} from "@libs/common/grpc/proto/user";
+import {TokenType, UserRoleEnum} from "@libs/common/grpc/proto/user";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import * as bcrypt from 'bcrypt';
 import {JwtModule} from "@nestjs/jwt";
@@ -72,7 +75,6 @@ describe('User MicroService - Integration Test', () => {
                 }
             ],
         }).compile();
-        // cacheManager = module.get<Cache>(CACHE_MANAGER)
         dataSource = module.get<DataSource>(DataSource)
         configService = module.get<ConfigService>(ConfigService)
 
@@ -89,7 +91,6 @@ describe('User MicroService - Integration Test', () => {
         userOutputPort = module.get<UserOutputPort>(UserRepository)
     })
     beforeEach(async () => {
-        // await cacheManager.clear()
         /* 초기 데이터 seeding */
         const userRepository = dataSource.getRepository(UserEntity);
 
@@ -103,16 +104,6 @@ describe('User MicroService - Integration Test', () => {
             }))
         ))
     })
-    // describe('user microService - usecases', () => {
-    //     describe('checkUserByEmailUsecase ', () => {
-    //     });
-    //     describe('getUsersUsecase ', () => {
-    //     });
-    //     describe('createUserUsecase ', () => {
-    //     });
-    //     describe('getUserUsecase ', () => {
-    //     });
-    // })
     describe('auth microService - usecases', () => {
         it('it should be create hashedPassword', async () => {
             expect(hashPasswordUsecase).toBeDefined();
@@ -130,16 +121,78 @@ describe('User MicroService - Integration Test', () => {
                 password: 'password1'
             }
             const result = await loginUsecase.execute(dto)
-            expect(result).toHaveProperty('accessToken');
-            expect(result).toHaveProperty('refreshToken');
+            expect(result).toMatchObject<ILoginResponse>({
+                accessToken: expect.any(String),
+                refreshToken: expect.any(String)
+            })
         });
-        it("parseBearerTokenUsecase should be defined", () => {
+        it("parseBearerTokenUsecase should be return tokens", async () => {
             expect(parseBearerTokenUsecase).toBeDefined();
+            expect(loginUsecase).toBeDefined();
+            const loginDto: LoginDto = {
+                email: '1@test.com',
+                password: 'password1'
+            }
+            const {accessToken, refreshToken} = await loginUsecase.execute(loginDto)
+
+            const accessTokenResult = await parseBearerTokenUsecase.execute({
+                token: ['bearer', accessToken].join(" "),
+                type: TokenType.ACCESS
+            });
+
+            const refreshTokenResult = await parseBearerTokenUsecase.execute({
+                token: ['bearer', refreshToken].join(" "),
+                type: TokenType.REFRESH
+            });
+
+            expect(accessTokenResult).toMatchObject<IJwtPayload>({
+                sub: expect.any(Number),
+                email: '1@test.com',
+                role: UserRoleEnum.SUPER,
+                type: TokenType.ACCESS,
+                expireIn: expect.any(Number)
+            });
+
+            expect(refreshTokenResult).toMatchObject<IJwtPayload>({
+                sub: expect.any(Number),
+                email: '1@test.com',
+                role: UserRoleEnum.SUPER,
+                type: TokenType.REFRESH,
+                expireIn: expect.any(Number)
+            });
         })
-        it("signUpUsecase should be defined", () => {
+        it("signUpUsecase should be defined", async () => {
             expect(signUpUsecase).toBeDefined();
+            // 0부터 9999 사이의 랜덤한 숫자 생성
+            const randomNum = +Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
+            const dto: SignUpDto = {
+                email: `test${randomNum}@test.com`,
+                password: `password${randomNum}`,
+                username: `test${randomNum}`
+            }
+
+            const userDomain = await signUpUsecase.execute(dto)
+            const user = await userOutputPort.getUser({
+                id: userDomain.id
+            })
+            expect(user).toMatchObject(userDomain)
         })
     })
+
+    /* 해당 테스트는 반복이라 생략
+    describe('user microService - usecases', () => {
+        it('checkUserByEmailUsecase ', () => {
+        });
+        it('getUsersUsecase ', () => {
+        });
+        it('createUserUsecase ', () => {
+        });
+        it('getUserUsecase ', () => {
+        });
+    })*/
+
+
     afterAll(async () => {
         await dataSource.destroy()
     })
