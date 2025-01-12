@@ -6,14 +6,14 @@ import {HashPasswordDto} from "./dto";
 
 @Injectable()
 export class HashPasswordUsecase
-    implements UseCase<HashPasswordDto, string> {
+    implements UseCase<HashPasswordDto, Promise<string>> {
     constructor(private readonly configService: ConfigService) {
     }
 
-    execute(dto: HashPasswordDto) {
+    async execute(dto: HashPasswordDto) {
         const {password, salt} = dto;
         try {
-            return bcrypt.hashSync(
+            return await bcrypt.hash(
                 password,
                 parseInt(this.configService.getOrThrow(ENVIRONMENT_KEYS.AUTH_ROUNDS)),
             );

@@ -114,7 +114,7 @@ describe('User MicroService - Integration Test', () => {
                     password: 'strongPassword',
                     salt: 'saltAndPepper'
                 }
-                expect(await bcrypt.compare(dto.password, hashPasswordUsecase.execute(dto))).toBe(true);
+                expect(await bcrypt.compare(dto.password, await hashPasswordUsecase.execute(dto))).toBe(true);
             });
         })
 

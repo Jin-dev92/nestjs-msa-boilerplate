@@ -32,7 +32,7 @@ export class AuthController implements UserMicroService.AuthServiceController {
     metadata?: Metadata,
   ) {
     return new HashPasswordResponseMapper(
-      this.hashPasswordUsecase.execute(payload),
+      await this.hashPasswordUsecase.execute(payload),
     ).toResponse();
   }
 
