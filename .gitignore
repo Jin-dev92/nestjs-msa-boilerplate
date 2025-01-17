@@ -1,3 +1,6 @@
+# terraform
+**/.terraform/*
+
 # compiled output
 /dist
 /node_modules
